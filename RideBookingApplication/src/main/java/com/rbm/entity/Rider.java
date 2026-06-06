@@ -1,18 +1,24 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Rider extends Users {
 	
-	@OneToMany(mappedBy = "rider")
+	@OneToMany(
+			mappedBy = "rider",
+			fetch = FetchType.LAZY
+			)
 	private List<Ride> rides;
 	
-	@ManyToMany
+	@ManyToMany(
+			fetch = FetchType.LAZY
+			)
 	private List<Coupon> coupons;
 	
 	

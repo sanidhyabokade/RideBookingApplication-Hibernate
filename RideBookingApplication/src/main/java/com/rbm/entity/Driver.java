@@ -1,8 +1,8 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import java.util.List;
 
-import com.rbm.Enums.DriverAvailablity;
+import com.rbm.enums.DriverAvailablity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -27,7 +27,10 @@ public class Driver extends Users{
 			)
 	private Vehicle vehicle;
 
-	@OneToMany(mappedBy = "driver")
+	@OneToMany(
+			mappedBy = "driver",
+			fetch = FetchType.LAZY
+			)
 	private List<Ride> rides;
 
 	public String getLicenseNumber() {

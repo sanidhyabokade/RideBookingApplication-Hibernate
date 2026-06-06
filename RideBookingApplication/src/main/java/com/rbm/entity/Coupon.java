@@ -1,4 +1,4 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import java.time.LocalDate;
 import java.util.List;

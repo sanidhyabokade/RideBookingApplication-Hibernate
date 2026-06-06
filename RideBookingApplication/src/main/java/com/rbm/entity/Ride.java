@@ -1,10 +1,12 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import java.time.LocalDateTime;
 
-import com.rbm.Enums.RideStatus;
+import com.rbm.enums.RideStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,15 +41,23 @@ public class Ride {
 	@JoinColumn(name="driver_id")
 	private Driver driver;
 	
-	@OneToOne
+	@OneToOne(
+			cascade = CascadeType.ALL,
+		    fetch = FetchType.EAGER
+		    )
 	@JoinColumn(name="payment_id")
 	private Payment payment;
 	
-	@OneToOne
+	@OneToOne(
+			cascade = CascadeType.ALL,
+		    fetch = FetchType.EAGER
+			)
 	@JoinColumn(name = "rating_id")
 	private Rating rating;
 	
-	@ManyToOne
+	@ManyToOne(
+			fetch = FetchType.EAGER
+			)
 	@JoinColumn(name = "coupon_id")
 	private Coupon coupon;
 

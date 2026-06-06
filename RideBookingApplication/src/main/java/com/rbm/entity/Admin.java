@@ -1,4 +1,4 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import jakarta.persistence.Entity;
 

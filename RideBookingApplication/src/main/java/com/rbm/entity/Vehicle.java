@@ -1,18 +1,20 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
-import com.rbm.Enums.VehicleType;
+import com.rbm.enums.VehicleType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 public class Vehicle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int vehicleId;
+	@Pattern(regexp = "^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$", message = "Enter a vlid number...!")
 	private String vehicleNumber;
 	private String model;
 	private VehicleType vehicleType;

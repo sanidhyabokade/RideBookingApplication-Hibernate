@@ -1,9 +1,9 @@
-package com.rbm.Entity;
+package com.rbm.entity;
 
 import java.time.LocalDateTime;
 
-import com.rbm.Enums.PaymentMethod;
-import com.rbm.Enums.PaymentStatus;
+import com.rbm.enums.PaymentMethod;
+import com.rbm.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

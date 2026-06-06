@@ -1,4 +1,4 @@
-package com.rbm.Enums;
+package com.rbm.enums;
 
 public enum RideStatus {
 	REQUESTED,
