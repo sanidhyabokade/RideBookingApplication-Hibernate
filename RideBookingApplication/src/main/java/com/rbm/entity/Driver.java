@@ -12,7 +12,7 @@ import jakarta.persistence.OneToOne;
 
 
 @Entity
-public class Driver extends Users{
+public class Driver extends User{
 
 	
 	private String licenseNumber;

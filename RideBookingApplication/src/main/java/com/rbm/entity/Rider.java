@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Rider extends Users {
+public class Rider extends User {
 	
 	@OneToMany(
 			mappedBy = "rider",
