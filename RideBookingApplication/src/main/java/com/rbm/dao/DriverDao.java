@@ -8,7 +8,7 @@ import com.rbm.enums.DriverAvailablity;
 
 public interface DriverDao {
 	
-	void registerDriver(Driver driver);
+	void registerDriver();
 	
 	Driver getDriverById(int driverId);
 	

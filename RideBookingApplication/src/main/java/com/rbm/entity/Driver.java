@@ -6,7 +6,10 @@ import com.rbm.enums.DriverAvailablity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
@@ -17,21 +20,34 @@ public class Driver extends User{
 	
 	private String licenseNumber;
 
-	private double rating;
+	private double averageRating;
+	private int totalRatings;
+	private int totalRidesCompleted;
 	private double totalEarnings;
+	
+	@Enumerated(EnumType.STRING)
 	private DriverAvailablity driverAvailability;
 
 	@OneToOne(
 			cascade = CascadeType.ALL,
 			fetch = FetchType.EAGER
 			)
+	@JoinColumn(name = "vehicle_id")
 	private Vehicle vehicle;
 
 	@OneToMany(
 			mappedBy = "driver",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
 			fetch = FetchType.LAZY
 			)
 	private List<Ride> rides;
+	
+	@OneToMany(
+			mappedBy = "driver",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+			fetch = FetchType.LAZY
+			)
+	private List<Rating> ratingReceived;
 
 	public String getLicenseNumber() {
 		return licenseNumber;
@@ -41,21 +57,32 @@ public class Driver extends User{
 		this.licenseNumber = licenseNumber;
 	}
 
-	public double getRating() {
-		return rating;
+	public double getAverageRating() {
+		return averageRating;
 	}
 
-	public void setRating(double rating) {
-		this.rating = rating;
+
+	public int getTotalRatings() {
+		return totalRatings;
+	}
+
+	public int getTotalRidesCompleted() {
+		return totalRidesCompleted;
+	}
+
+
+	public List<Rating> getRatingReceived() {
+		return ratingReceived;
+	}
+
+	public void setRatingReceived(List<Rating> ratingReceived) {
+		this.ratingReceived = ratingReceived;
 	}
 
 	public double getTotalEarnings() {
 		return totalEarnings;
 	}
 
-	public void setTotalEarnings(double totalEarnings) {
-		this.totalEarnings = totalEarnings;
-	}
 
 	public DriverAvailablity getDriverAvailability() {
 		return driverAvailability;
@@ -81,5 +108,26 @@ public class Driver extends User{
 		this.rides = rides;
 	}
 	
+	public void completeRide(double fare) {
+		totalRidesCompleted++;
+		totalEarnings += fare;
+	}
+	
+	public void addRating(int stars) {
+		if(stars < 1 || stars > 5) {
+			throw new IllegalArgumentException("Rating must be between 1 and 5");
+		}
+		
+		averageRating = ((averageRating * totalRatings) + stars) / (totalRatings + 1);
+		
+		totalRatings++;
+	}
+	
+	public Driver() {
+		this.averageRating = 0.0;
+		this.totalRatings = 0;
+		this.totalRidesCompleted = 0;
+		this.totalEarnings = 0.0;
+	}
 	
 }

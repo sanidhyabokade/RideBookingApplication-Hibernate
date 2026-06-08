@@ -6,9 +6,13 @@ import com.rbm.enums.PaymentMethod;
 import com.rbm.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -17,11 +21,18 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int paymentId;
 	private double amount;
+	
+	@Enumerated(EnumType.STRING)
 	private PaymentMethod paymentMethod;
+	
+	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
+	
+	
 	private LocalDateTime paymentTime;
 	
-	@OneToOne(mappedBy = "payment")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ride_id")
 	private Ride ride;
 
 	public int getPaymentId() {

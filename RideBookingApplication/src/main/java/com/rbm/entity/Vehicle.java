@@ -3,6 +3,9 @@ package com.rbm.entity;
 import com.rbm.enums.VehicleType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,11 +20,33 @@ public class Vehicle {
 	@Pattern(regexp = "^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$", message = "Enter a vlid number...!")
 	private String vehicleNumber;
 	private String model;
+	private String color;
+	
+	@Enumerated(EnumType.STRING)
 	private VehicleType vehicleType;
 	private int seatingCapacity;
 	
-	@OneToOne(mappedBy = "vehicle")
+	@OneToOne(
+			mappedBy = "vehicle",
+			fetch = FetchType.LAZY
+			)
 	private Driver driver;
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public VehicleType getVehicleType() {
+		return vehicleType;
+	}
+
+	public void setVehicleType(VehicleType vehicleType) {
+		this.vehicleType = vehicleType;
+	}
 
 	public int getVehicleId() {
 		return vehicleId;
@@ -47,13 +72,7 @@ public class Vehicle {
 		this.model = model;
 	}
 
-	public VehicleType getVehicleType() {
-		return vehicleType;
-	}
-
-	public void setVehicleType(VehicleType vehicleType) {
-		this.vehicleType = vehicleType;
-	}
+	
 
 	public int getSeatingCapacity() {
 		return seatingCapacity;

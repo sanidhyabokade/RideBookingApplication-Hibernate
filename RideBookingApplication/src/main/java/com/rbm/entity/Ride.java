@@ -6,6 +6,8 @@ import com.rbm.enums.RideStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +16,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class Ride {
@@ -22,37 +26,41 @@ public class Ride {
 	private int rideId;
 	private String pickUpLoc;
 	private String destination;
+	@Positive
 	private double distance;
 	private int duration;
+	@PositiveOrZero
 	private double fare;
 	private LocalDateTime bookingTime;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
+	
+	@Enumerated(EnumType.STRING)
 	private RideStatus rideStatus;
 	
 	@Version
 	private int version;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="rider_id")
 	private Rider rider;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="driver_id")
 	private Driver driver;
 	
 	@OneToOne(
+			mappedBy = "ride",
 			cascade = CascadeType.ALL,
-		    fetch = FetchType.EAGER
+		    fetch = FetchType.LAZY
 		    )
-	@JoinColumn(name="payment_id")
 	private Payment payment;
 	
 	@OneToOne(
+			mappedBy = "ride",
 			cascade = CascadeType.ALL,
-		    fetch = FetchType.EAGER
+		    fetch = FetchType.LAZY
 			)
-	@JoinColumn(name = "rating_id")
 	private Rating rating;
 	
 	@ManyToOne(

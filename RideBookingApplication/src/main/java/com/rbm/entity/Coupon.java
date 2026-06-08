@@ -4,11 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Coupon {
@@ -16,18 +19,31 @@ public class Coupon {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int couponId;
 	private String couponCode;
-	private double discountAmount;
+	@Min(0)
+	@Max(100)
+	private double discountPercentage;
 	private LocalDate expiryDate;
 	private boolean active;
 	
 	@OneToMany(mappedBy = "coupon")
 	private List<Ride> rides;
 	
-	@ManyToMany(mappedBy = "coupons")
+	@ManyToMany(
+			mappedBy = "coupons",
+			fetch = FetchType.LAZY
+			)
 	private List<Rider> riders;
 
 	public int getCouponId() {
 		return couponId;
+	}
+
+	public double getDiscountPercentage() {
+		return discountPercentage;
+	}
+
+	public void setDiscountPercentage(double discountPercentage) {
+		this.discountPercentage = discountPercentage;
 	}
 
 	public void setCouponId(int couponId) {
@@ -42,13 +58,6 @@ public class Coupon {
 		this.couponCode = couponCode;
 	}
 
-	public double getDiscountAmount() {
-		return discountAmount;
-	}
-
-	public void setDiscountAmount(double discountAmount) {
-		this.discountAmount = discountAmount;
-	}
 
 	public LocalDate getExpiryDate() {
 		return expiryDate;
