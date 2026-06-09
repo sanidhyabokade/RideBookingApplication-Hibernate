@@ -15,9 +15,7 @@ import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+
 
 public class DriverDaoImple implements DriverDao{
 
@@ -28,7 +26,12 @@ public class DriverDaoImple implements DriverDao{
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
-		System.out.println("======== DRIVER REGISTRATION ========");
+		System.out.println("===============================");
+		System.out.println("==                           ==");
+		System.out.println("==    DRIVER REGISTRATION    ==");
+		System.out.println("==                           ==");
+		System.out.println("===============================");
+		System.out.println();
 
 		System.out.print("Enter Your Name: ");
 		String name = sc.next();
@@ -45,7 +48,9 @@ public class DriverDaoImple implements DriverDao{
 		System.out.print("Enter Your License Number: ");
 		String licenseNum = sc.next();
 
+		System.out.println();
 		System.out.println("-------- VEHICLE DETAILS --------");
+		System.out.println();
 
 		System.out.print("Enter Your Vehicle Number(MH12PQ5869): ");
 		String vehicleNum = sc.next();
@@ -234,7 +239,23 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void deleteDriver(int driverId) {
-		// TODO Auto-generated method stub
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Driver driver = em.find(Driver.class, driverId);
+		try {
+			et.begin();
+			em.remove(driver);
+			et.commit();
+			System.out.println("Driver Removed Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Removing Driver Failed...!");
+		}
+		finally {
+			em.close();
+		}
 
 	}
 

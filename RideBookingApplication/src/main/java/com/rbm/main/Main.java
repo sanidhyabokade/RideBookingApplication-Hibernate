@@ -1,11 +1,57 @@
 package com.rbm.main;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import java.util.Scanner;
+
+import com.rbm.controller.DriverController;
+import com.rbm.util.AppUtil;
 
 public class Main {
 	public static void main(String[] args) {
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("rbm");
-		System.out.println("Tables Successfully Created...!");
+		Scanner sc = AppUtil.getScanner();
+		System.out.println("******************************");
+		System.out.println("**                          **");
+		System.out.println("** Ride Booking Application **");
+		System.out.println("**                          **");
+		System.out.println("******************************");
+		System.out.println("==============================");
+		System.out.println("==                          ==");
+		System.out.println("==   Welcome To Main Menu   ==");
+		System.out.println("==                          ==");
+		System.out.println("==============================");
+		System.out.println("|                            |");
+		System.out.println("|     1. Login As Admin      |");
+		System.out.println("|     2. Login As Rider      |");
+		System.out.println("|     3. Login As Driver     |");
+		System.out.println("|     4. Register Rider      |");
+		System.out.println("|     5. Register Driver     |");
+		System.out.println("|     6. Exit                |");
+		System.out.println("|                            |");
+		System.out.println("==============================");
+		System.out.print("Enter Your Choice(1, 2, 3, 4, 5, 6): ");
+		int choice = sc.nextInt();
+		switch (choice) {
+		case 1:
+			
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			break;
+		case 4:
+			
+			break;
+		case 5:
+			DriverController dc2 = new DriverController();
+			dc2.driverRegistration();
+			break;
+		case 6:
+			System.out.println("Exiting Application...!");
+			System.exit(0);
+			break;
+
+		default:
+			break;
+		}
 	}
 }

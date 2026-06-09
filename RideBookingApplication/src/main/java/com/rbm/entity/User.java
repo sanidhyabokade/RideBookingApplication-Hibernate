@@ -25,7 +25,6 @@ public abstract class User {
 	@Column(unique = true)
 	private String email;
 	private String password;
-	@Pattern(regexp = "^[0-9]{10}",message = "Enter Valid Number...!")
 	@Column(unique = true)
 	private long phoneNUmber;
 	private LocalDateTime createdAt;
