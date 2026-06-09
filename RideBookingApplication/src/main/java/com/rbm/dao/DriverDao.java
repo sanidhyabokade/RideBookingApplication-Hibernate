@@ -14,7 +14,7 @@ public interface DriverDao {
 	
 	List<Ride> getDriverRideHistory(int driverId);
 	
-	void updateDriver(Driver driver);
+	void updateDriver(int driverId);
 	
 	void changeAvailability(int driverId, DriverAvailablity availablity);
 	

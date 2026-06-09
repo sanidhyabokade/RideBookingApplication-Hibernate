@@ -15,51 +15,54 @@ import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class DriverDaoImple implements DriverDao{
-	
+
 	Scanner sc = AppUtil.getScanner();
 
 	@Override
 	public void registerDriver() {
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		
+
 		System.out.println("======== DRIVER REGISTRATION ========");
-		
+
 		System.out.print("Enter Your Name: ");
 		String name = sc.next();
-		
+
 		System.out.print("Enter Your Email: ");
 		String email = sc.next();
-		
+
 		System.out.print("Enter Your Password: ");
 		String password = sc.next();
-		
+
 		System.out.print("Enter Your Contact Number: ");
 		long contactNumber = sc.nextLong();
-		
+
 		System.out.print("Enter Your License Number: ");
 		String licenseNum = sc.next();
-		
+
 		System.out.println("-------- VEHICLE DETAILS --------");
-		
+
 		System.out.print("Enter Your Vehicle Number(MH12PQ5869): ");
 		String vehicleNum = sc.next();
-		
+
 		System.out.print("Enter Vehicle Model: ");
 		String model = sc.next();
-		
+
 		System.out.print("Enter Your Vehicle Color: ");
 		String color = sc.next();
-		
+
 		VehicleType type = null;
-		
+
 		while(type == null) {
-			
+
 			System.out.print("Enter Your Vehicle Type(BIKE, AUTO, MINI, SEDAN, SUV): ");
 			String choice = sc.next();
-			
+
 			if(choice.equalsIgnoreCase("BIKE")) {
 				type = VehicleType.BIKE;
 			}else if(choice.equalsIgnoreCase("AUTO")) {
@@ -74,17 +77,17 @@ public class DriverDaoImple implements DriverDao{
 				System.err.println("Enter A Valid Type...!");
 			}
 		}
-		
+
 		System.out.print("Enter Seating Capacity Of Your Vehicle: ");
 		int capacity = sc.nextInt();
-		
+
 		Vehicle v = new Vehicle();
 		v.setVehicleNumber(vehicleNum);
 		v.setModel(model);
 		v.setColor(color);
 		v.setSeatingCapacity(capacity);
 		v.setVehicleType(type);
-		
+
 		Driver d = new Driver();
 		d.setName(name);
 		d.setEmail(email);
@@ -94,7 +97,7 @@ public class DriverDaoImple implements DriverDao{
 		d.setDriverAvailability(DriverAvailablity.ONLINE);
 		d.setCreatedAt(LocalDateTime.now());
 		d.setVehicle(v);
-		
+
 		try {
 			et.begin();
 			em.persist(d);
@@ -113,32 +116,34 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public Driver getDriverById(int driverId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		Driver driver = em.find(Driver.class, driverId);
+		return driver;
 	}
 
 	@Override
 	public List<Ride> getDriverRideHistory(int driverId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		Driver driver = em.find(Driver.class, driverId);
+		List<Ride> rides = driver.getRides();
+		return rides;
 	}
 
 	@Override
-	public void updateDriver(Driver driver) {
+	public void updateDriver(int driverId) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void changeAvailability(int driverId, DriverAvailablity availablity) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteDriver(int driverId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
