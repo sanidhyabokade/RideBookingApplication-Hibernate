@@ -131,13 +131,88 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void updateDriver(int driverId) {
-		// TODO Auto-generated method stub
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		
+		Driver driver = em.find(Driver.class, driverId);
+		
+		while(true) {
+			System.out.println("Press 1 to Update Email");
+			System.out.println("Press 2 to Update Password");
+			System.out.println("Press 3 to Update Contact Number");
+			System.out.println("Press 4 to go back to previous menu");
+			int choice = sc.nextInt();
+			switch (choice) {
+			case 1:
+				System.out.print("Enter New Email: ");
+				String email = sc.next();
+				driver.setEmail(email);
+				try {
+					et.begin();
+					em.merge(driver);
+					et.commit();
+					System.out.println("Driver Registered Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Registration Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 2:
+				System.out.print("Enter New Password: ");
+				String password = sc.next();
+				driver.setPassword(password);
+				try {
+					et.begin();
+					em.merge(driver);
+					et.commit();
+					System.out.println("Driver Registered Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Registration Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 3:
+				System.out.print("Enter New Contact Number: ");
+				long phoneNum = sc.nextLong();
+				driver.setPhoneNUmber(phoneNum);
+				try {
+					et.begin();
+					em.merge(driver);
+					et.commit();
+					System.out.println("Driver Registered Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Registration Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 4:
+				return;
+
+			default:
+				System.err.println("Invaid Choice...!");
+				break;
+			}
+		}
 	}
 
 	@Override
 	public void changeAvailability(int driverId, DriverAvailablity availablity) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
