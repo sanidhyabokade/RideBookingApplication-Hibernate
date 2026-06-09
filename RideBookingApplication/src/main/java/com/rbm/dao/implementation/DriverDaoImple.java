@@ -151,12 +151,12 @@ public class DriverDaoImple implements DriverDao{
 					et.begin();
 					em.merge(driver);
 					et.commit();
-					System.out.println("Driver Registered Successfully!");
+					System.out.println("Email Updated Successfully!");
 				} catch (Exception e) {
 					if(et.isActive()) {
 						et.rollback();
 					}
-					System.err.println("Registration Failed...!");
+					System.err.println("Updating Email Failed...!");
 				}
 				finally {
 					em.close();
@@ -170,12 +170,12 @@ public class DriverDaoImple implements DriverDao{
 					et.begin();
 					em.merge(driver);
 					et.commit();
-					System.out.println("Driver Registered Successfully!");
+					System.out.println("Password Updated Successfully!");
 				} catch (Exception e) {
 					if(et.isActive()) {
 						et.rollback();
 					}
-					System.err.println("Registration Failed...!");
+					System.err.println("Updating Password Failed...!");
 				}
 				finally {
 					em.close();
@@ -189,12 +189,12 @@ public class DriverDaoImple implements DriverDao{
 					et.begin();
 					em.merge(driver);
 					et.commit();
-					System.out.println("Driver Registered Successfully!");
+					System.out.println("Contact Number Updated Successfully!");
 				} catch (Exception e) {
 					if(et.isActive()) {
 						et.rollback();
 					}
-					System.err.println("Registration Failed...!");
+					System.err.println("Updating Contact Number Failed...!");
 				}
 				finally {
 					em.close();
