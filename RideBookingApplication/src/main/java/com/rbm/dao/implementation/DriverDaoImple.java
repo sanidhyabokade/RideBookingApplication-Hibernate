@@ -212,7 +212,24 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void changeAvailability(int driverId, DriverAvailablity availablity) {
-		// TODO Auto-generated method stub
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Driver driver = em.find(Driver.class, driverId);
+		driver.setDriverAvailability(availablity);
+		try {
+			et.begin();
+			em.merge(driver);
+			et.commit();
+			System.out.println("Driver Availability Changed Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Changing Driver Availability Failed...!");
+		}
+		finally {
+			em.close();
+		}
 	}
 
 	@Override
