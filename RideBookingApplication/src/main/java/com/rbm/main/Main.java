@@ -37,6 +37,12 @@ public class Main {
 			
 			break;
 		case 3:
+			DriverController dc1 = new DriverController();
+			System.out.print("Enter Your Email: ");
+			String email = sc.next();
+			System.out.print("Enter Your Password: ");
+			String password = sc.next();
+			dc1.loginAsDriver(email, password);
 			break;
 		case 4:
 			

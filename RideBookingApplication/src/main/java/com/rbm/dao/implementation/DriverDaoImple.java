@@ -15,6 +15,7 @@ import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 
 public class DriverDaoImple implements DriverDao{
@@ -257,6 +258,14 @@ public class DriverDaoImple implements DriverDao{
 			em.close();
 		}
 
+	}
+
+	@Override
+	public List<Ride> viewAvailableRides() {
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r",Ride.class);
+		List<Ride> list = query.getResultList();
+		return list;
 	}
 
 }
