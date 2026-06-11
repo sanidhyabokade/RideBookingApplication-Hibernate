@@ -54,7 +54,9 @@ public class DriverServices {
 				}
 				break;
 			case 2:
-				
+				System.out.print("ENTER RIDE ID OF THE RIDE THAT YOU WANT TO ACCEPT: ");
+				int rideId = sc.nextInt();
+				dd.acceptRide(driverId, rideId);
 				break;
 			case 3:
 				

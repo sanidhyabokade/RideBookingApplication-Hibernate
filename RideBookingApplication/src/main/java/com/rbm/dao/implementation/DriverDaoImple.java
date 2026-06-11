@@ -9,6 +9,7 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
+import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
@@ -124,6 +125,7 @@ public class DriverDaoImple implements DriverDao{
 	public Driver getDriverById(int driverId) {
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
+		em.close();
 		return driver;
 	}
 
@@ -132,6 +134,7 @@ public class DriverDaoImple implements DriverDao{
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		List<Ride> rides = driver.getRides();
+		em.close();
 		return rides;
 	}
 
@@ -263,9 +266,62 @@ public class DriverDaoImple implements DriverDao{
 	@Override
 	public List<Ride> viewAvailableRides() {
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r",Ride.class);
+		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r WHERE r.ridestatus = :status",Ride.class);
+		query.setParameter("status", RideStatus.REQUESTED);
 		List<Ride> list = query.getResultList();
+		em.close();
 		return list;
+	}
+
+	@Override
+	public void acceptRide(int driverId, int rideId) {
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		
+		Driver driver = em.find(Driver.class, driverId);
+		Ride ride = em.find(Ride.class, rideId);
+		
+		if(driver == null) {
+		    System.err.println("Driver Not Found!");
+		    return;
+		}
+
+		if(ride == null) {
+		    System.err.println("Ride Not Found!");
+		    return;
+		}
+		
+		if(ride.getRideStatus() != RideStatus.REQUESTED) {
+		    System.err.println("Ride Already Accepted/Completed!");
+		    return;
+		}
+		
+		if(ride.getDriver() != null) {
+		    System.err.println("Ride Already Assigned!");
+		    return;
+		}
+		
+		ride.setDriver(driver);
+		ride.setRideStatus(RideStatus.ACCEPTED);
+		driver.setDriverAvailability(DriverAvailablity.ON_RIDE);
+		
+		try {
+			et.begin();
+			em.merge(ride);
+			em.merge(driver);
+			et.commit();
+			System.out.println("Ride Accepted Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Accepting Ride Failed...!");
+		}
+		finally {
+			em.close();
+		}
+		
+		
 	}
 
 }
