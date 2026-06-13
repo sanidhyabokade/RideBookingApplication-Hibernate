@@ -141,14 +141,26 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getCompletedRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.COMPLETED));
+		
+		List<Ride> list = em.createQuery(query).getResultList();
+		return list;
 	}
 
 	@Override
 	public List<Ride> getCancelledRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.CANCELLED));
+		
+		List<Ride> list = em.createQuery(query).getResultList();
+		return list;
 	}
 
 	@Override
