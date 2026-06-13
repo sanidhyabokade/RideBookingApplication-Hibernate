@@ -59,7 +59,18 @@ public class DriverServices {
 				dd.acceptRide(driverId, rideId);
 				break;
 			case 3:
-				
+				Ride ride = dd.viewCurrentRide(driverId);
+				if(ride == null) {
+			        System.out.println("No Current Ride Found!");
+			    } else {
+					System.out.println("------------ Current Ride  -------------");
+			    	System.out.println("Ride ID: "+ride.getRideId());
+					System.out.println("Pickup Location: "+ride.getPickUpLoc());
+					System.out.println("Drop Location: "+ride.getDestination());
+					System.out.println("Fare: "+ride.getFare());
+					System.out.println();
+					System.out.println("----------------------------------------");
+			    }
 				break;
 			case 4:
 				

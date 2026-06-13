@@ -19,6 +19,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 
+
 public class DriverDaoImple implements DriverDao{
 
 	Scanner sc = AppUtil.getScanner();
@@ -322,6 +323,34 @@ public class DriverDaoImple implements DriverDao{
 		}
 		
 		
+	}
+
+	@Override
+	public Ride viewCurrentRide(int driverId) {
+		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		try {
+
+	        TypedQuery<Ride> query = em.createQuery(
+	                "SELECT r FROM Ride r " +
+	                "WHERE r.driver.userId = :driverId " +
+	                "AND (r.rideStatus = :accepted OR r.rideStatus = :started)",
+	                Ride.class);
+
+	        query.setParameter("driverId", driverId);
+	        query.setParameter("accepted", RideStatus.ACCEPTED);
+	        query.setParameter("started", RideStatus.STARTED);
+
+	        List<Ride> rides = query.getResultList();
+
+	        if(rides.isEmpty()) {
+	            return null;
+	        }
+
+	        return rides.get(0);
+
+	    } finally {
+	        em.close();
+	    }
 	}
 
 }

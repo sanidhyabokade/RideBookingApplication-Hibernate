@@ -18,6 +18,8 @@ public interface DriverDao {
 	
 	void acceptRide(int driverId, int rideId);
 	
+	Ride viewCurrentRide(int driverId);
+	
 	void updateDriver(int driverId);
 	
 	void changeAvailability(int driverId, DriverAvailablity availablity);
