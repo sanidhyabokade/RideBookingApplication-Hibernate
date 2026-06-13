@@ -18,6 +18,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class RideDaoImple implements RideDao{
 
@@ -114,8 +117,14 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getPendingRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.REQUESTED));
+		
+		List<Ride> list = em.createQuery(query).getResultList();
+		return list;
 	}
 
 	@Override
