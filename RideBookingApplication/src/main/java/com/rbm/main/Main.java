@@ -42,7 +42,7 @@ public class Main {
 			String email = sc.next();
 			System.out.print("Enter Your Password: ");
 			String password = sc.next();
-			dc1.loginAsDriver(email, password);
+			dc1.driverLogin(email, password);
 			break;
 		case 4:
 			

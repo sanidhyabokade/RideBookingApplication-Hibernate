@@ -6,7 +6,7 @@ import com.rbm.entity.Ride;
 
 public interface RideDao {
 
-	void bookRide(Ride ride);
+	void bookRide();
 	
 	Ride getRideById(int rideId);
 	
@@ -25,4 +25,10 @@ public interface RideDao {
 	void cancelRide(int rideId);
 	
 	void completeRide(int rideId);
+	
+	List<Ride> viewAvailableRides();
+	
+	void acceptRide(int driverId, int rideId);
+	
+	Ride viewCurrentRide(int driverId);
 }

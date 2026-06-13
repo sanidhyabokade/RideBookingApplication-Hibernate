@@ -9,14 +9,16 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
-import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
+import com.rbm.service.DriverServices;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 
 
@@ -265,92 +267,30 @@ public class DriverDaoImple implements DriverDao{
 	}
 
 	@Override
-	public List<Ride> viewAvailableRides() {
+	public void loginAsDriver(String email, String password) {
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r WHERE r.ridestatus = :status",Ride.class);
-		query.setParameter("status", RideStatus.REQUESTED);
-		List<Ride> list = query.getResultList();
-		em.close();
-		return list;
-	}
-
-	@Override
-	public void acceptRide(int driverId, int rideId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-		EntityTransaction et = em.getTransaction();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Driver> query = builder.createQuery(Driver.class);
+		Root<Driver> root = query.from(Driver.class);
+		query.select(root).where(
+				builder.and(
+						builder.equal(root.get("email"), email),
+						builder.equal(root.get("password"), password)
+						)
+				);
+		List<Driver> list = em.createQuery(query).getResultList();
 		
-		Driver driver = em.find(Driver.class, driverId);
-		Ride ride = em.find(Ride.class, rideId);
-		
-		if(driver == null) {
-		    System.err.println("Driver Not Found!");
-		    return;
+		if(list.isEmpty()) {
+			System.err.println("Invalid Credentials...!");
+		}else {
+			System.out.println();
+			System.out.println("Login Successfull...!");
+			System.out.println();
+			Driver driver = list.get(0);
+			System.out.println("Hello "+driver.getName()+" 👋");
+			DriverServices ds = new DriverServices();
+			ds.driverDashBoard(driver.getUserId());
 		}
-
-		if(ride == null) {
-		    System.err.println("Ride Not Found!");
-		    return;
-		}
-		
-		if(ride.getRideStatus() != RideStatus.REQUESTED) {
-		    System.err.println("Ride Already Accepted/Completed!");
-		    return;
-		}
-		
-		if(ride.getDriver() != null) {
-		    System.err.println("Ride Already Assigned!");
-		    return;
-		}
-		
-		ride.setDriver(driver);
-		ride.setRideStatus(RideStatus.ACCEPTED);
-		driver.setDriverAvailability(DriverAvailablity.ON_RIDE);
-		
-		try {
-			et.begin();
-			em.merge(ride);
-			em.merge(driver);
-			et.commit();
-			System.out.println("Ride Accepted Successfully!");
-		} catch (Exception e) {
-			if(et.isActive()) {
-				et.rollback();
-			}
-			System.err.println("Accepting Ride Failed...!");
-		}
-		finally {
-			em.close();
-		}
-		
 		
 	}
-
-	@Override
-	public Ride viewCurrentRide(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-		try {
-
-	        TypedQuery<Ride> query = em.createQuery(
-	                "SELECT r FROM Ride r " +
-	                "WHERE r.driver.userId = :driverId " +
-	                "AND (r.rideStatus = :accepted OR r.rideStatus = :started)",
-	                Ride.class);
-
-	        query.setParameter("driverId", driverId);
-	        query.setParameter("accepted", RideStatus.ACCEPTED);
-	        query.setParameter("started", RideStatus.STARTED);
-
-	        List<Ride> rides = query.getResultList();
-
-	        if(rides.isEmpty()) {
-	            return null;
-	        }
-
-	        return rides.get(0);
-
-	    } finally {
-	        em.close();
-	    }
-	}
-
 }

@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.DriverDao;
+import com.rbm.dao.RideDao;
 import com.rbm.dao.implementation.DriverDaoImple;
+import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.entity.Ride;
 import com.rbm.util.AppUtil;
 
 public class DriverServices {
 	Scanner sc = AppUtil.getScanner();
 	DriverDao dd = new DriverDaoImple();
+	RideDao rd = new RideDaoImple();
 	public void driverDashBoard(int driverId) {
 		while(true) {
 			System.out.println("******************************");
@@ -42,7 +45,7 @@ public class DriverServices {
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
-				List<Ride> rides = dd.viewAvailableRides();
+				List<Ride> rides = rd.viewAvailableRides();
 				System.out.println("------------ Available Rides  -------------");
 				for(Ride r: rides) {
 					System.out.println("Ride ID: "+r.getRideId());
@@ -56,10 +59,10 @@ public class DriverServices {
 			case 2:
 				System.out.print("ENTER RIDE ID OF THE RIDE THAT YOU WANT TO ACCEPT: ");
 				int rideId = sc.nextInt();
-				dd.acceptRide(driverId, rideId);
+				rd.acceptRide(driverId, rideId);
 				break;
 			case 3:
-				Ride ride = dd.viewCurrentRide(driverId);
+				Ride ride = rd.viewCurrentRide(driverId);
 				if(ride == null) {
 			        System.out.println("No Current Ride Found!");
 			    } else {

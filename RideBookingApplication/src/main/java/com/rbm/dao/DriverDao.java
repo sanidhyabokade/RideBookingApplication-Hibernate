@@ -10,15 +10,11 @@ public interface DriverDao {
 	
 	void registerDriver();
 	
+	void loginAsDriver(String email, String password);
+	
 	Driver getDriverById(int driverId);
 	
 	List<Ride> getDriverRideHistory(int driverId);
-	
-	List<Ride> viewAvailableRides();
-	
-	void acceptRide(int driverId, int rideId);
-	
-	Ride viewCurrentRide(int driverId);
 	
 	void updateDriver(int driverId);
 	
