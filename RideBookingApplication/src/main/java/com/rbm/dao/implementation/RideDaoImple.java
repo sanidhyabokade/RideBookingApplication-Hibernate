@@ -99,14 +99,17 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public Ride getRideById(int rideId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		Ride ride = em.find(Ride.class, rideId);
+		return ride;
 	}
 
 	@Override
 	public List<Ride> getAllRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		TypedQuery<Ride> typedQuery = em.createQuery("SELECT r ride FROM ride r",Ride.class);
+		List<Ride> list = typedQuery.getResultList();
+		return list;
 	}
 
 	@Override
