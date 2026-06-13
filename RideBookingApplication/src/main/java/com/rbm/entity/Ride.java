@@ -3,6 +3,7 @@ package com.rbm.entity;
 import java.time.LocalDateTime;
 
 import com.rbm.enums.RideStatus;
+import com.rbm.enums.VehicleType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,10 +35,20 @@ public class Ride {
 	private LocalDateTime bookingTime;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
+	@Enumerated(EnumType.STRING)
+	private VehicleType vehicleType;
 	
 	@Enumerated(EnumType.STRING)
 	private RideStatus rideStatus;
 	
+	public VehicleType getVehicleType() {
+		return vehicleType;
+	}
+
+	public void setVehicleType(VehicleType vehicleType) {
+		this.vehicleType = vehicleType;
+	}
+
 	@Version
 	private int version;
 	

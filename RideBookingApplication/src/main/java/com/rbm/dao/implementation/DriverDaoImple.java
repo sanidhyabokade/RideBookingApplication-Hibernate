@@ -15,6 +15,7 @@ import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -24,11 +25,12 @@ import jakarta.persistence.criteria.Root;
 
 public class DriverDaoImple implements DriverDao{
 
+	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	Scanner sc = AppUtil.getScanner();
 
 	@Override
 	public void registerDriver() {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		System.out.println("===============================");
@@ -126,7 +128,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public Driver getDriverById(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		em.close();
 		return driver;
@@ -134,7 +136,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public List<Ride> getDriverRideHistory(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		List<Ride> rides = driver.getRides();
 		em.close();
@@ -143,7 +145,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void updateDriver(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		
 		Driver driver = em.find(Driver.class, driverId);
@@ -224,7 +226,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void changeAvailability(int driverId, DriverAvailablity availablity) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
 		driver.setDriverAvailability(availablity);
@@ -246,7 +248,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void deleteDriver(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
 		try {
@@ -268,7 +270,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public void loginAsDriver(String email, String password) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Driver> query = builder.createQuery(Driver.class);
 		Root<Driver> root = query.from(Driver.class);
