@@ -7,7 +7,7 @@ import com.rbm.entity.Rider;
 
 public interface RiderDao {
 	
-	void registerRider(Rider rider);
+	void registerRider();
 	
 	Rider getRiderById(int riderId);
 	
@@ -16,4 +16,6 @@ public interface RiderDao {
 	void updateRider(Rider rider);
 	
 	void deleteRider(int riderId);
+	
+	void viewProfile(int riderId);
 }
