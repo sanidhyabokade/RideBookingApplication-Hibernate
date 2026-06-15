@@ -13,7 +13,7 @@ public interface RiderDao {
 	
 	List<Ride> getRideHistory(int riderId);
 	
-	void updateRider(Rider rider);
+	void updateRider(int riderId);
 	
 	void deleteRider(int riderId);
 	
