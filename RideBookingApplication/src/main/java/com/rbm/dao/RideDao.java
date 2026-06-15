@@ -20,8 +20,6 @@ public interface RideDao {
 	
 	List<Ride> getCancelledRides();
 	
-	void assignDriver(int rideId, int driverId);
-	
 	void cancelRide(int rideId);
 	
 	void completeRide(int rideId);

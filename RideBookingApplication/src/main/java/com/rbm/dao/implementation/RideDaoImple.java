@@ -87,10 +87,10 @@ public class RideDaoImple implements RideDao{
 
 		} catch (Exception e) {
 			if(et.isActive()) {
-	            et.rollback();
-	        }
+				et.rollback();
+			}
 
-	        e.printStackTrace();
+			e.printStackTrace();
 		}
 		finally {
 			em.close();
@@ -104,14 +104,16 @@ public class RideDaoImple implements RideDao{
 	public Ride getRideById(int rideId) {
 		EntityManager em = emf.createEntityManager();
 		Ride ride = em.find(Ride.class, rideId);
+		em.close();
 		return ride;
 	}
 
 	@Override
 	public List<Ride> getAllRides() {
 		EntityManager em = emf.createEntityManager();
-		TypedQuery<Ride> typedQuery = em.createQuery("SELECT r ride FROM ride r",Ride.class);
+		TypedQuery<Ride> typedQuery = em.createQuery("SELECT r FROM Ride r",Ride.class);
 		List<Ride> list = typedQuery.getResultList();
+		em.close();
 		return list;
 	}
 
@@ -122,8 +124,9 @@ public class RideDaoImple implements RideDao{
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
 		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.REQUESTED));
-		
+
 		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
 		return list;
 	}
 
@@ -134,8 +137,9 @@ public class RideDaoImple implements RideDao{
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
 		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.ACCEPTED));
-		
+
 		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
 		return list;
 	}
 
@@ -146,8 +150,9 @@ public class RideDaoImple implements RideDao{
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
 		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.COMPLETED));
-		
+
 		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
 		return list;
 	}
 
@@ -158,27 +163,56 @@ public class RideDaoImple implements RideDao{
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
 		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.CANCELLED));
-		
+
 		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
 		return list;
 	}
 
 	@Override
-	public void assignDriver(int rideId, int driverId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void cancelRide(int rideId) {
-		// TODO Auto-generated method stub
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Ride ride = em.find(Ride.class, rideId);
+		ride.setRideStatus(RideStatus.CANCELLED);
+		try {
+			et.begin();
+			em.merge(ride);
+			et.commit();
+			System.out.println("Ride Cancelled Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Cancelling Ride Failed...!");
+		}
+		finally {
+			em.close();
+		}
 
 	}
 
 	@Override
 	public void completeRide(int rideId) {
-		// TODO Auto-generated method stub
-
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Ride ride = em.find(Ride.class, rideId);
+		ride.setRideStatus(RideStatus.COMPLETED);
+		
+		try {
+			et.begin();
+			em.merge(ride);
+			et.commit();
+			System.out.println("Ride Completed Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Completing Ride Failed...!");
+		}
+		finally {
+			em.close();
+		}
 	}
 
 	@Override
