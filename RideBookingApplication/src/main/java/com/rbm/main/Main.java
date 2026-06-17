@@ -54,7 +54,8 @@ public class Main {
 			dc1.driverLogin(email3, password3);
 			break;
 		case 4:
-			
+			RiderController rc2 = new RiderController();
+			rc2.registerRider();
 			break;
 		case 5:
 			DriverController dc2 = new DriverController();

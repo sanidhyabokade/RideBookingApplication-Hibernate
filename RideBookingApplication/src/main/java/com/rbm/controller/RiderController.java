@@ -9,4 +9,8 @@ public class RiderController {
 	public void riderLogin(String email, String password) {
 		dao.loginAsRider(email, password);
 	}
+	
+	public void registerRider() {
+		dao.registerRider();
+	}
 }
