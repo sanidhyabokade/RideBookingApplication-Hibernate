@@ -6,12 +6,16 @@ import java.util.Scanner;
 import com.rbm.dao.RiderDao;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
+import com.rbm.service.RiderServices;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class RiderDaoImple implements RiderDao{
 
@@ -196,6 +200,34 @@ public class RiderDaoImple implements RiderDao{
 	    System.out.println("Email   : " + rider.getEmail());
 	    System.out.println("Phone   : " + rider.getPhoneNUmber());
 	    System.out.println();
+		
+	}
+
+	@Override
+	public void loginAsRider(String email, String password) {
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Rider> query = builder.createQuery(Rider.class);
+		Root<Rider> root = query.from(Rider.class);
+		query.select(root).where(
+				builder.and(
+						builder.equal(root.get("email"), email),
+						builder.equal(root.get("password"), password)
+						)
+				);
+		List<Rider> list = em.createQuery(query).getResultList();
+		
+		if(list.isEmpty()) {
+			System.err.println("Invalid Credentials...!");
+		}else {
+			System.out.println();
+			System.out.println("Login Successfull...!");
+			System.out.println();
+			Rider rider = list.get(0);
+			String greetings = "Hello "+rider.getName()+" 👋";
+			RiderServices rs = new RiderServices();
+			rs.riderDashBoard(rider.getUserId(),greetings);
+		}
 		
 	}
 

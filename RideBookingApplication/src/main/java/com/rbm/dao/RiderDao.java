@@ -13,6 +13,8 @@ public interface RiderDao {
 	
 	List<Ride> getRideHistory(int riderId);
 	
+	void loginAsRider(String email, String password);
+	
 	void updateRider(int riderId);
 	
 	void deleteRider(int riderId);

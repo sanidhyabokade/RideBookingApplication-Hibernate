@@ -289,9 +289,9 @@ public class DriverDaoImple implements DriverDao{
 			System.out.println("Login Successfull...!");
 			System.out.println();
 			Driver driver = list.get(0);
-			System.out.println("Hello "+driver.getName()+" 👋");
+			String greetings = "Hello "+driver.getName()+" 👋";
 			DriverServices ds = new DriverServices();
-			ds.driverDashBoard(driver.getUserId());
+			ds.driverDashBoard(driver.getUserId(), greetings);
 		}
 		
 	}

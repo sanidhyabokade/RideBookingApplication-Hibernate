@@ -3,20 +3,20 @@ package com.rbm.service;
 import java.util.List;
 import java.util.Scanner;
 
-import com.rbm.dao.DriverDao;
 import com.rbm.dao.RideDao;
-import com.rbm.dao.implementation.DriverDaoImple;
+import com.rbm.dao.RiderDao;
 import com.rbm.dao.implementation.RideDaoImple;
+import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Ride;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
-public class DriverServices {
+public class RiderServices {
 	Scanner sc = AppUtil.getScanner();
-	DriverDao dd = new DriverDaoImple();
 	UiUtil ui = new UiUtil();
+	RiderDao rid = new RiderDaoImple();
 	RideDao rd = new RideDaoImple();
-	public void driverDashBoard(int driverId, String greetings) {
+	public void riderDashBoard(int driverId, String greetings) {
 		while(true) {
 			System.out.println("**********************************");
 			System.out.println("**                              **");
@@ -25,7 +25,7 @@ public class DriverServices {
 			System.out.println("**********************************");
 			System.out.println("==================================");
 			System.out.println("==                              ==");
-			ui.printCentered("DRIVER DASHBOARD");
+			ui.printCentered("RIDER DASHBOARD");
 			System.out.println("==                              ==");
 			ui.printCentered(greetings);
 			System.out.println("==                              ==");
@@ -104,7 +104,6 @@ public class DriverServices {
 				
 				break;
 			case 12:
-				System.out.println();
 				System.out.println("Exiting...!");
 				return;
 
