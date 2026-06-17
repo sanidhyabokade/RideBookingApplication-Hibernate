@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.RiderDao;
-import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.util.AppUtil;
