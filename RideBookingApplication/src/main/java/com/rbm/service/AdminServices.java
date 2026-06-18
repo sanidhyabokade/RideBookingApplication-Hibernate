@@ -11,7 +11,6 @@ import com.rbm.dao.implementation.AdminDaoImple;
 import com.rbm.dao.implementation.DriverDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
-import com.rbm.entity.Admin;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
@@ -25,7 +24,7 @@ public class AdminServices {
 	UiUtil ui = new UiUtil();
 	RideDao rd = new RideDaoImple();
 	RiderDao rid = new RiderDaoImple();
-	public void adminDashboard(int driverId, String greetings) {
+	public void adminDashboard(int adminId, String greetings) {
 		while(true) {
 			System.out.println("**********************************");
 			System.out.println("**                              **");
@@ -68,12 +67,14 @@ public class AdminServices {
 			case 3:
 				List<Rider> riders = ad.getAllRiders();
 				for(Rider r:riders) {
+					System.out.println("----------------------------------------------------------------");
 					System.out.println("Rider ID                 : "+r.getUserId());
 					System.out.println("Name                     : "+r.getName());
 					System.out.println("Email                    : "+r.getEmail());
 					System.out.println("Phone Number             : "+r.getPhoneNUmber());
 					System.out.println("Accounted Creation Date  : "+r.getCreatedAt());
 					System.out.println("Total Rides              : "+rid.getTotalRides(r.getUserId()));
+					System.out.println("----------------------------------------------------------------");
 				}
 				break;
 			case 4:
@@ -92,31 +93,90 @@ public class AdminServices {
 				}
 				break;
 			case 5:
-				
+				List<Ride> rides = ad.getAllRides();
+				for(Ride r:rides) {
+					System.out.println("----------------------------------------------------------------");
+					System.out.println("Ride ID                : "+r.getRideId());
+					System.out.println("Rider Name             : "+r.getRider().getName());
+					System.out.println("Driver Name            : "+r.getDriver().getName());
+					System.out.println("From                   : "+r.getPickUpLoc());
+					System.out.println("To                     : "+r.getDestination());
+					System.out.println("Fare                   : "+r.getFare());
+					System.out.println("Status                 : "+r.getRideStatus());
+					System.out.println("----------------------------------------------------------------");
+				}
 				break;
 			case 6:
-				
+				List<Ride> pendingRides = ad.getPendingRides();
+				for(Ride r:pendingRides) {
+					System.out.println("----------------------------------------------------------------");
+					System.out.println("Ride ID                : "+r.getRideId());
+					System.out.println("Rider Name             : "+r.getRider().getName());
+					System.out.println("From                   : "+r.getPickUpLoc());
+					System.out.println("To                     : "+r.getDestination());
+					System.out.println("Fare                   : "+r.getFare());
+					System.out.println("----------------------------------------------------------------");
+				}
 				break;
 			case 7:
-				
+				List<Ride> acceptedRides = ad.getAcceptedRides();
+				for(Ride r:acceptedRides) {
+					System.out.println("----------------------------------------------------------------");
+					System.out.println("Ride ID                : "+r.getRideId());
+					System.out.println("Rider Name             : "+r.getRider().getName());
+					System.out.println("Driver Name            : "+r.getDriver().getName());
+					System.out.println("From                   : "+r.getPickUpLoc());
+					System.out.println("To                     : "+r.getDestination());
+					System.out.println("Fare                   : "+r.getFare());
+					System.out.println("----------------------------------------------------------------");
+				}
 				break;
 			case 8:
-				
+				List<Ride> completedRides = ad.getCompletedRides();
+				for(Ride r:completedRides) {
+					System.out.println("----------------------------------------------------------------");
+					System.out.println("Ride ID                : "+r.getRideId());
+					System.out.println("Rider Name             : "+r.getRider().getName());
+					System.out.println("Driver Name            : "+r.getDriver().getName());
+					System.out.println("From                   : "+r.getPickUpLoc());
+					System.out.println("To                     : "+r.getDestination());
+					System.out.println("Fare                   : "+r.getFare());
+					System.out.println("----------------------------------------------------------------");
+				}
 				break;
 			case 9:
-				
+				List<Ride> cancelledRides = ad.getCancelledRides();
+				for(Ride r:cancelledRides) {
+					System.out.println("----------------------------------------------------------------");
+					System.out.println("Ride ID                : "+r.getRideId());
+					System.out.println("Rider Name             : "+r.getRider().getName());
+					System.out.println("Driver Name            : "+r.getDriver().getName());
+					System.out.println("From                   : "+r.getPickUpLoc());
+					System.out.println("To                     : "+r.getDestination());
+					System.out.println("Fare                   : "+r.getFare());
+					System.out.println("----------------------------------------------------------------");
+				}
 				break;
 			case 10:
-				
+				System.out.println();
+				System.out.print("Enter Rider ID: ");
+				int riderId = sc.nextInt();
+				ad.deleteRider(riderId);
 				break;
 			case 11:
-				
+				System.out.println();
+				System.out.print("Enter Driver ID: ");
+				int driverId = sc.nextInt();
+				ad.deleteRider(driverId);
 				break;
 			case 12:
-				
+				System.out.println("--------------------------------------------------------------------");
+				ad.viewAdminProfile();
+				System.out.println("--------------------------------------------------------------------");
 				break;
 			case 13:
-				
+				System.out.println();
+				ad.updateAdmin();
 				break;
 			case 14:
 				System.out.println();
