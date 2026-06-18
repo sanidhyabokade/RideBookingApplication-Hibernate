@@ -62,6 +62,7 @@ public class Main {
 			dc2.driverRegistration();
 			break;
 		case 6:
+			System.out.println();
 			System.out.println("Exiting Application...!");
 			System.exit(0);
 			break;

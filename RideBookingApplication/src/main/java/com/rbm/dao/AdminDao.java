@@ -15,13 +15,23 @@ public interface AdminDao {
 	
 	List<Ride> getAllRides();
 	
+	List<Ride> getPendingRides();
+	
+	List<Ride> getAcceptedRides();
+	
+	List<Ride> getCompletedRides();
+	
+	List<Ride> getCancelledRides();
+	
 	List<Payment> getAllPayments();
 	
-	void blockDriver(int driverId);
+	void deleteRider(int riderId);
+
+    void deleteDriver(int driverId);
 	
-	void unblockDriver(int driverId);
+	void viewAdminProfile();
 	
-	void blockRider(int riderId);
+	void updateAdmin();
 	
 	Double getTotalRevenue();
 }
