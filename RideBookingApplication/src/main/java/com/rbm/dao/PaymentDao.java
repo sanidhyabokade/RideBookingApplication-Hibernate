@@ -15,4 +15,6 @@ public interface PaymentDao {
 	
 	void updatePaymentStatus(int paymentId, PaymentStatus status);
 	
+	Double getTotalRevenue();
+	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.AdminDao;
+import com.rbm.entity.Admin;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
@@ -14,6 +15,7 @@ import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -23,7 +25,7 @@ public class AdminDaoImple implements AdminDao {
 
 	Scanner sc = AppUtil.getScanner();
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	
+
 	@Override
 	public List<Rider> getAllRiders() {
 		EntityManager em = emf.createEntityManager();
@@ -66,20 +68,41 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getAcceptedRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.ACCEPTED));
+
+		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
+		return list;
 	}
 
 	@Override
 	public List<Ride> getCompletedRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.COMPLETED));
+
+		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
+		return list;
 	}
 
 	@Override
 	public List<Ride> getCancelledRides() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
+		Root<Ride> root = query.from(Ride.class);
+		query.select(root).where(builder.equal(root.get("rideStatus"), RideStatus.CANCELLED));
+
+		List<Ride> list = em.createQuery(query).getResultList();
+		em.close();
+		return list;
 	}
 
 	@Override
@@ -90,26 +113,140 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public void deleteRider(int riderId) {
-		// TODO Auto-generated method stub
-		
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Rider rider = em.find(Rider.class, riderId);
+		try {
+			et.begin();
+			em.remove(rider);
+			et.commit();
+			System.out.println("Rider Removed Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Removing Rider Failed...!");
+		}
+		finally {
+			em.close();
+		}
+
 	}
 
 	@Override
 	public void deleteDriver(int driverId) {
-		// TODO Auto-generated method stub
-		
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Driver driver = em.find(Driver.class, driverId);
+		try {
+			et.begin();
+			em.remove(driver);
+			et.commit();
+			System.out.println("Driver Removed Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Removing Driver Failed...!");
+		}
+		finally {
+			em.close();
+		}
+
 	}
 
 	@Override
 	public void viewAdminProfile() {
-		// TODO Auto-generated method stub
-		
+		EntityManager em = emf.createEntityManager();
+		Admin admin = em.find(Admin.class, 2);
+		System.out.println("======== ADMIN PROFILE ========");
+		System.out.println("ID      : " + admin.getUserId());
+		System.out.println("Name    : " + admin.getName());
+		System.out.println("Email   : " + admin.getEmail());
+		System.out.println("Phone   : " + admin.getPhoneNUmber());
+		System.out.println();
+
 	}
 
 	@Override
 	public void updateAdmin() {
-		// TODO Auto-generated method stub
-		
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		Admin admin = em.find(Admin.class, 2);
+
+		while(true) {
+			System.out.println("Press 1 to Update Email");
+			System.out.println("Press 2 to Update Password");
+			System.out.println("Press 3 to Update Contact Number");
+			System.out.println("Press 4 to go back to previous menu");
+			int choice = sc.nextInt();
+			switch (choice) {
+			case 1:
+				System.out.print("Enter New Email: ");
+				String email = sc.next();
+				admin.setEmail(email);
+				try {
+					et.begin();
+					em.merge(admin);
+					et.commit();
+					System.out.println("Email Updated Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Updating Email Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 2:
+				System.out.print("Enter New Password: ");
+				String password = sc.next();
+				admin.setPassword(password);
+				try {
+					et.begin();
+					em.merge(admin);
+					et.commit();
+					System.out.println("Password Updated Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Updating Password Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 3:
+				System.out.print("Enter New Contact Number: ");
+				long phoneNum = sc.nextLong();
+				admin.setPhoneNUmber(phoneNum);
+				try {
+					et.begin();
+					em.merge(admin);
+					et.commit();
+					System.out.println("Contact Number Updated Successfully!");
+				} catch (Exception e) {
+					if(et.isActive()) {
+						et.rollback();
+					}
+					System.err.println("Updating Contact Number Failed...!");
+				}
+				finally {
+					em.close();
+				}
+				break;
+			case 4:
+				return;
+
+			default:
+				System.err.println("Invaid Choice...!");
+				break;
+			}
+		}
+
 	}
 
 	@Override
