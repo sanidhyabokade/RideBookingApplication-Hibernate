@@ -9,6 +9,8 @@ import com.rbm.entity.Rider;
 
 public interface AdminDao {
 	
+	void loginAsAdmin(String email, String password);
+	
 	List<Rider> getAllRiders();
 	
 	List<Driver> getAllDrivers();

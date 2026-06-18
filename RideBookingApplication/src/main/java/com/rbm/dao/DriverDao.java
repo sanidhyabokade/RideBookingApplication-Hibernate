@@ -21,4 +21,8 @@ public interface DriverDao {
 	void changeAvailability(int driverId, DriverAvailablity availablity);
 	
 	void deleteDriver(int driverId);
+	
+	int getTotalRides(int driverId);
+	
+	double getTotalRevenue(int driverId);
 }

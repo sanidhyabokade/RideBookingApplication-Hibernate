@@ -295,4 +295,22 @@ public class DriverDaoImple implements DriverDao{
 		}
 		
 	}
+
+	@Override
+	public int getTotalRides(int driverId) {
+		EntityManager em = emf.createEntityManager();
+		Driver driver = em.find(Driver.class, driverId);
+		int size = driver.getRides().size();
+		return size;
+	}
+
+	@Override
+	public double getTotalRevenue(int driverId) {
+		EntityManager em = emf.createEntityManager();
+		Driver driver = em.find(Driver.class, driverId);
+		double earnings = driver.getTotalEarnings();
+		return earnings;
+	}
+	
+	
 }

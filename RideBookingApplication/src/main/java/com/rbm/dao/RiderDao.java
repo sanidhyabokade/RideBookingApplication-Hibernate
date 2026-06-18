@@ -20,4 +20,6 @@ public interface RiderDao {
 	void deleteRider(int riderId);
 	
 	void viewProfile(int riderId);
+	
+	int getTotalRides(int riderId);
 }

@@ -231,4 +231,12 @@ public class RiderDaoImple implements RiderDao{
 		
 	}
 
+	@Override
+	public int getTotalRides(int riderId) {
+		EntityManager em = emf.createEntityManager();
+		Rider rider = em.find(Rider.class, riderId);
+		int size = rider.getRides().size();
+		return size;
+	}
+
 }

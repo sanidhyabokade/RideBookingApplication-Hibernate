@@ -10,6 +10,7 @@ import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.enums.RideStatus;
+import com.rbm.service.AdminServices;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
@@ -137,7 +138,7 @@ public class AdminDaoImple implements AdminDao {
 	public void deleteDriver(int driverId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		Driver driver = em.find(Driver.class, driverId);
+		Admin driver = em.find(Admin.class, driverId);
 		try {
 			et.begin();
 			em.remove(driver);
@@ -253,6 +254,33 @@ public class AdminDaoImple implements AdminDao {
 	public Double getTotalRevenue() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void loginAsAdmin(String email, String password) {
+		EntityManager em = emf.createEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Admin> query = builder.createQuery(Admin.class);
+		Root<Admin> root = query.from(Admin.class);
+		query.select(root).where(
+				builder.and(
+						builder.equal(root.get("email"), email),
+						builder.equal(root.get("password"), password)
+						)
+				);
+		List<Admin> list = em.createQuery(query).getResultList();
+		
+		if(list.isEmpty()) {
+			System.err.println("Invalid Credentials...!");
+		}else {
+			System.out.println();
+			System.out.println("Login Successfull...!");
+			System.out.println();
+			Admin admin = list.get(0);
+			String greetings = "Hello "+admin.getName()+" 👋";
+			AdminServices as = new AdminServices();
+			as.adminDashboard(admin.getUserId(), greetings);
+		}
+		
 	}
 
 }
