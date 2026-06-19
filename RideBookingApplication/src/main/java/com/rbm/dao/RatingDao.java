@@ -6,7 +6,7 @@ import com.rbm.entity.Rating;
 
 public interface RatingDao {
 	
-	void addRating(Rating rating);
+	void giveRating(int rideId);
 	
 	Rating getRatingById(int ratingId);
 	

@@ -13,6 +13,4 @@ public class AdminController {
 	public void adminLogin(String email, String password) {
 		dao.loginAsAdmin(email, password);
 	}
-	
-	
 }

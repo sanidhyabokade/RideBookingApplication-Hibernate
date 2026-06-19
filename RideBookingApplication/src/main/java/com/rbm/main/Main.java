@@ -2,6 +2,7 @@ package com.rbm.main;
 
 import java.util.Scanner;
 
+import com.rbm.controller.AdminController;
 import com.rbm.controller.DriverController;
 import com.rbm.controller.RiderController;
 import com.rbm.util.AppUtil;
@@ -32,10 +33,17 @@ public class Main {
 		int choice = sc.nextInt();
 		switch (choice) {
 		case 1:
-			
+			AdminController ac = new AdminController();
+			System.out.println();
+			System.out.print("Enter Your Email: ");
+			String email1 = sc.next();
+			System.out.print("Enter Your Password: ");
+			String password1 = sc.next();
+			ac.adminLogin(email1, password1);
 			break;
 		case 2:
 			RiderController rc1 = new RiderController();
+			System.out.println();
 			System.out.print("Enter Your Email: ");
 			String email2 = sc.next();
 			System.out.print("Enter Your Password: ");
