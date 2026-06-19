@@ -207,6 +207,4 @@ public class Ride {
 	public void setCoupon(Coupon coupon) {
 		this.coupon = coupon;
 	}
-	
-	
 }
