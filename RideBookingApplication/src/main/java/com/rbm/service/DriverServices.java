@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.DriverDao;
+import com.rbm.dao.RatingDao;
 import com.rbm.dao.RideDao;
 import com.rbm.dao.implementation.DriverDaoImple;
+import com.rbm.dao.implementation.RatingDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.entity.Ride;
 import com.rbm.util.AppUtil;
@@ -15,6 +17,7 @@ public class DriverServices {
 	Scanner sc = AppUtil.getScanner();
 	DriverDao dd = new DriverDaoImple();
 	UiUtil ui = new UiUtil();
+	RatingDao rad = new RatingDaoImple(); 
 	RideDao rd = new RideDaoImple();
 	public void driverDashBoard(int driverId, String greetings) {
 		while(true) {
@@ -98,7 +101,8 @@ public class DriverServices {
 				
 				break;
 			case 10:
-				
+				Double driverRating = rad.getAverageDriverRating(driverId);
+				System.out.println("Your current rating is: "+driverRating.toString());
 				break;
 			case 11:
 				

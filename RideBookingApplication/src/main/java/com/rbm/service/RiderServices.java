@@ -1,9 +1,12 @@
 package com.rbm.service;
 
+import java.util.List;
 import java.util.Scanner;
 
+import com.rbm.dao.RatingDao;
 import com.rbm.dao.RideDao;
 import com.rbm.dao.RiderDao;
+import com.rbm.dao.implementation.RatingDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Ride;
@@ -15,6 +18,7 @@ public class RiderServices {
 	UiUtil ui = new UiUtil();
 	RiderDao rid = new RiderDaoImple();
 	RideDao rd = new RideDaoImple();
+	RatingDao rad = new RatingDaoImple();
 	public void riderDashBoard(int riderId, String greetings) {
 		while(true) {
 			System.out.println("**********************************");
@@ -66,7 +70,29 @@ public class RiderServices {
 				rd.cancelRide(rideId);
 				break;
 			case 4:
-				rid.getRideHistory(riderId);
+				List<Ride> rideHistory = rid.getRideHistory(riderId);
+				for(Ride r:rideHistory) {
+					if(r == null) {
+				        System.out.println("No Current Ride Found!");
+				    } else {
+						System.out.println("------------ Ride History -------------");
+				    	System.out.println("Ride ID: "+r.getRideId());
+						System.out.println("Pickup Location: "+r.getPickUpLoc());
+						System.out.println("Drop Location: "+r.getDestination());
+						System.out.println("Fare: "+r.getFare());
+						System.out.println();
+						System.out.print("Do you want to give rating to this driver(y/n)?: ");
+						String options = sc.next();
+						System.out.println("----------------------------------------");
+						if(options.equalsIgnoreCase("y")) {
+							System.out.println("------------------- Give Rating ---------------");
+							rad.giveRating(r.getRideId());
+							System.out.println("-----------------------------------------------");
+						}else {
+							break;
+						}
+				    }
+				}
 				break;
 			case 5:
 				rid.viewProfile(riderId);
