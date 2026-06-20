@@ -198,6 +198,10 @@ public class RideDaoImple implements RideDao{
 		EntityTransaction et = em.getTransaction();
 		Ride ride = em.find(Ride.class, rideId);
 		ride.setRideStatus(RideStatus.COMPLETED);
+		LocalDateTime now = LocalDateTime.now();
+		ride.setEndTime(LocalDateTime.now());
+		LocalDateTime startTime = ride.getStartTime();
+		
 		
 		try {
 			et.begin();
@@ -336,5 +340,11 @@ public class RideDaoImple implements RideDao{
 				System.out.println("Invalid Choice!");
 			}
 		}
+	}
+
+	@Override
+	public void startRide(int rideId) {
+		
+		
 	}
 }

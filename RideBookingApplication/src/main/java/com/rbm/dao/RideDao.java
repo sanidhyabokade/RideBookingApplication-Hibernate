@@ -29,4 +29,6 @@ public interface RideDao {
 	void acceptRide(int driverId, int rideId);
 	
 	Ride viewCurrentRide(int driverId);
+	
+	void startRide(int rideId);
 }
