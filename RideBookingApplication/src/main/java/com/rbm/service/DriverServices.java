@@ -6,11 +6,14 @@ import java.util.Scanner;
 import com.rbm.dao.DriverDao;
 import com.rbm.dao.RatingDao;
 import com.rbm.dao.RideDao;
+import com.rbm.dao.VehicleDao;
 import com.rbm.dao.implementation.DriverDaoImple;
 import com.rbm.dao.implementation.RatingDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
+import com.rbm.dao.implementation.VehicleDaoImple;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
+import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
@@ -22,6 +25,7 @@ public class DriverServices {
 	UiUtil ui = new UiUtil();
 	RatingDao rad = new RatingDaoImple(); 
 	RideDao rd = new RideDaoImple();
+	VehicleDao vd = new VehicleDaoImple();
 	public void driverDashBoard(int driverId, String greetings) {
 		while(true) {
 			System.out.println("**********************************");
@@ -48,7 +52,9 @@ public class DriverServices {
 			System.out.println("|     9. Update Profile          |");
 			System.out.println("|     10. View Ratings           |");
 			System.out.println("|     11. View Total Earnings    |");
-			System.out.println("|     12. Logout                 |");
+			System.out.println("|     12. View Vehicle           |");
+			System.out.println("|     13. Update Vehicle         |");
+			System.out.println("|     14. Logout                 |");
 			System.out.println("|                                |");
 			System.out.println("==================================");
 			System.out.print("Enter Your Choice(1, 2, 3, ..., 12): ");
@@ -155,9 +161,18 @@ public class DriverServices {
 				System.out.println("Your current rating is: "+driverRating.toString());
 				break;
 			case 11:
-				dd.getTotalRevenue(driverId);
+				double totalRevenue = dd.getTotalRevenue(driverId);
+				System.out.println("Your Total Earnings are: "+totalRevenue);
 				break;
 			case 12:
+				Driver driver2 = dd.getDriverById(driverId);
+				int vehicleId = driver2.getVehicle().getVehicleId();
+				vd.getVehicleById(vehicleId);
+				return;
+			case 13:
+				vd.updateVehicle(dd.getDriverById(driverId).getVehicle().getVehicleId());
+				return;
+			case 14:
 				System.out.println();
 				System.out.println("Exiting...!");
 				return;

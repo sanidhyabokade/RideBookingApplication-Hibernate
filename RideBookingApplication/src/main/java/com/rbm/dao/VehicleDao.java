@@ -9,10 +9,10 @@ public interface VehicleDao {
 	void addVehicle(Vehicle vehicle);
 	
 	Vehicle getVehicleById(int vehicleId);
-	
-	List<Vehicle> getVehiclesByDriver(int driverId);
-	
-	void updateVehicle(Vehicle vehicle);
+		
+	void updateVehicle(int vehicleId);
 	
 	void deleteVehicle(int vehicleId);
+	
+	List<Vehicle> getAllVehicles();
 }
