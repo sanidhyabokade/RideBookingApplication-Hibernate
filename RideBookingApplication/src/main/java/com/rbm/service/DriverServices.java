@@ -9,7 +9,10 @@ import com.rbm.dao.RideDao;
 import com.rbm.dao.implementation.DriverDaoImple;
 import com.rbm.dao.implementation.RatingDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
+import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
+import com.rbm.enums.DriverAvailablity;
+import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
@@ -83,29 +86,76 @@ public class DriverServices {
 			    }
 				break;
 			case 4:
-				
+				Ride currentRide1 = rd.viewCurrentRide(driverId);
+				int rideId1 = currentRide1.getRideId();
+				rd.startRide(rideId1);
 				break;
 			case 5:
-				
+				Ride currentRide2 = rd.viewCurrentRide(driverId);
+				int rideId2 = currentRide2.getRideId();
+				rd.completeRide(rideId2);
 				break;
 			case 6:
-				
+				List<Ride> completedRides = rd.getCompletedRides();
+				System.out.println("---------------- Rides Completed -------------------");
+				for(Ride r:completedRides) {
+					System.out.println("Ride ID: "+r.getRideId());
+					System.out.println("Pickup Location: "+r.getPickUpLoc());
+					System.out.println("Drop Location: "+r.getDestination());
+					System.out.println("Fare: "+r.getFare());
+					System.out.println();
+					System.out.println("-------------------------------------------------");
+				}
 				break;
 			case 7:
-				
+				System.out.println("==================================");
+				System.out.println("|                                |");
+				System.out.println("|          1. Online             |");
+				System.out.println("|          2. Offline            |");
+				System.out.println("|                                |");
+				System.out.println("==================================");
+				int choice1 = sc.nextInt();
+
+				DriverAvailablity availability = null;
+
+				switch(choice1) {
+				    case 1:
+				        availability = DriverAvailablity.ONLINE;
+				        break;
+
+				    case 2:
+				        availability = DriverAvailablity.OFFLINE;
+				        break;
+				        
+				    default:
+				        System.err.println("Invalid Choice!");
+				        return;
+				}
+
+				dd.changeAvailability(driverId, availability);
 				break;
 			case 8:
-				
+				Driver driver = dd.getDriverById(driverId);
+				System.out.println("----------------------------------------------------------------");
+				System.out.println("Driver ID                : "+driver.getUserId());
+				System.out.println("Name                     : "+driver.getName());
+				System.out.println("Phone Number             : "+driver.getPhoneNUmber());
+				System.out.println("Rating                   : "+driver.getAverageRating());
+				System.out.println("Driver Availability      : "+driver.getDriverAvailability());
+				System.out.println("Vehicle Type             : "+driver.getVehicle().getVehicleType());
+				System.out.println("Total Earnings           : "+driver.getTotalEarnings());
+				System.out.println("Total Rides              : "+dd.getTotalRides(driver.getUserId()));
+				System.out.println("----------------------------------------------------------------");
 				break;
 			case 9:
-				
+				dd.updateDriver(driverId);
 				break;
 			case 10:
 				Double driverRating = rad.getAverageDriverRating(driverId);
 				System.out.println("Your current rating is: "+driverRating.toString());
 				break;
 			case 11:
-				
+				dd.getTotalRevenue(driverId);
 				break;
 			case 12:
 				System.out.println();

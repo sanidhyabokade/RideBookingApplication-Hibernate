@@ -344,7 +344,41 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public void startRide(int rideId) {
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction et = em.getTransaction();
 		
+		Ride ride = em.find(Ride.class, rideId);
 		
+		if(ride == null) {
+			System.err.println("Ride Not Found!");
+			return;
+		}
+
+		if(ride.getRideStatus() != RideStatus.ACCEPTED) {
+			if(ride.getRideStatus() == RideStatus.REQUESTED) {
+				System.err.println("Ride not accepted!");
+			}else if(ride.getRideStatus() == RideStatus.CANCELLED) {
+				System.err.println("Ride has been cancelled!");
+			}else if(ride.getRideStatus() == RideStatus.COMPLETED) {
+				System.err.println("Ride has been completed!");
+			}
+			return;
+		}
+		
+		ride.setRideStatus(RideStatus.STARTED);
+		try {
+			et.begin();
+			em.merge(ride);
+			et.commit();
+			System.out.println("Ride Started Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
+			}
+			System.err.println("Starting Ride Failed...!");
+		}
+		finally {
+			em.close();
+		}
 	}
 }
