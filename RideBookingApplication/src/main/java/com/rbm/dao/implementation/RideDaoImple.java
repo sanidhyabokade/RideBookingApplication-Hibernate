@@ -1,5 +1,6 @@
 package com.rbm.dao.implementation;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -196,25 +197,68 @@ public class RideDaoImple implements RideDao{
 	public void completeRide(int rideId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		Ride ride = em.find(Ride.class, rideId);
-		ride.setRideStatus(RideStatus.COMPLETED);
-		LocalDateTime now = LocalDateTime.now();
-		ride.setEndTime(LocalDateTime.now());
-		LocalDateTime startTime = ride.getStartTime();
-		
-		
+
 		try {
+
+			Ride ride = em.find(Ride.class, rideId);
+
+			if(ride == null) {
+				System.err.println("Ride Not Found!");
+				return;
+			}
+
+			if(ride.getRideStatus() != RideStatus.STARTED) {
+				System.err.println("Ride must be IN_PROGRESS!");
+				return;
+			}
+
+			Driver driver = ride.getDriver();
+
 			et.begin();
+
+			ride.setRideStatus(RideStatus.COMPLETED);
+
+			LocalDateTime endTime = LocalDateTime.now();
+
+			ride.setEndTime(endTime);
+
+			int duration = (int) Duration.between(
+					ride.getStartTime(),
+					endTime
+					).toMinutes();
+
+			ride.setDuration(duration);
+
+			driver.setTotalEarnings(
+					driver.getTotalEarnings()
+					+ ride.getFare());
+
+			driver.setTotalRidesCompleted(
+					driver.getTotalRidesCompleted()
+					+ 1);
+
+			driver.setDriverAvailability(
+					DriverAvailablity.ONLINE);
+
+			em.merge(driver);
 			em.merge(ride);
+
 			et.commit();
+
 			System.out.println("Ride Completed Successfully!");
+			System.out.println("Ride Duration : "
+					+ duration + " Minutes");
+
 		} catch (Exception e) {
+
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Completing Ride Failed...!");
-		}
-		finally {
+
+			System.err.println("Completing Ride Failed!");
+			e.printStackTrace();
+
+		} finally {
 			em.close();
 		}
 	}
@@ -346,38 +390,41 @@ public class RideDaoImple implements RideDao{
 	public void startRide(int rideId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		
-		Ride ride = em.find(Ride.class, rideId);
-		
-		if(ride == null) {
-			System.err.println("Ride Not Found!");
-			return;
-		}
 
-		if(ride.getRideStatus() != RideStatus.ACCEPTED) {
-			if(ride.getRideStatus() == RideStatus.REQUESTED) {
-				System.err.println("Ride not accepted!");
-			}else if(ride.getRideStatus() == RideStatus.CANCELLED) {
-				System.err.println("Ride has been cancelled!");
-			}else if(ride.getRideStatus() == RideStatus.COMPLETED) {
-				System.err.println("Ride has been completed!");
-			}
-			return;
-		}
-		
-		ride.setRideStatus(RideStatus.STARTED);
 		try {
+
+			Ride ride = em.find(Ride.class, rideId);
+
+			if(ride == null) {
+				System.err.println("Ride Not Found!");
+				return;
+			}
+
+			if(ride.getRideStatus() != RideStatus.ACCEPTED) {
+				System.err.println("Only ACCEPTED rides can be started!");
+				return;
+			}
+
 			et.begin();
+
+			ride.setRideStatus(RideStatus.STARTED);
+			ride.setStartTime(LocalDateTime.now());
+
 			em.merge(ride);
+
 			et.commit();
+
 			System.out.println("Ride Started Successfully!");
+
 		} catch (Exception e) {
+
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Starting Ride Failed...!");
-		}
-		finally {
+
+			System.err.println("Starting Ride Failed!");
+
+		} finally {
 			em.close();
 		}
 	}

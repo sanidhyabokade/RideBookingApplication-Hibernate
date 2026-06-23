@@ -61,6 +61,22 @@ public class Driver extends User{
 		return averageRating;
 	}
 
+	
+	public void setAverageRating(double averageRating) {
+		this.averageRating = averageRating;
+	}
+
+	public void setTotalRatings(int totalRatings) {
+		this.totalRatings = totalRatings;
+	}
+
+	public void setTotalRidesCompleted(int totalRidesCompleted) {
+		this.totalRidesCompleted = totalRidesCompleted;
+	}
+
+	public void setTotalEarnings(double totalEarnings) {
+		this.totalEarnings = totalEarnings;
+	}
 
 	public int getTotalRatings() {
 		return totalRatings;

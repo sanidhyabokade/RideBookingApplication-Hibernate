@@ -13,9 +13,7 @@ import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.VehicleDaoImple;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
-import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
-import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
