@@ -7,9 +7,12 @@ import java.util.Scanner;
 
 import com.rbm.dao.RideDao;
 import com.rbm.entity.Driver;
+import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.enums.DriverAvailablity;
+import com.rbm.enums.PaymentMethod;
+import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
 import com.rbm.util.AppUtil;
@@ -239,6 +242,49 @@ public class RideDaoImple implements RideDao{
 
 			driver.setDriverAvailability(
 					DriverAvailablity.ONLINE);
+
+			Payment payment = new Payment();
+
+			payment.setRide(ride);
+			payment.setAmount(ride.getFare());
+
+			PaymentMethod method = null;
+			System.out.println("*CHOOSE PAYMENT MODE*");
+
+
+			System.out.println("1.UPI");
+			System.out.println("2.CARD");
+			System.out.println("3.CASH");
+
+			int choice = sc.nextInt();
+
+			switch(choice) {
+
+			case 1:
+				method = PaymentMethod.UPI;
+				break;
+
+			case 2:
+				method = PaymentMethod.CARD;
+				break;
+
+			case 3:
+				method = PaymentMethod.CASH;
+				break;
+
+			default:
+				System.out.println("Invalid Choice!");
+				return;
+			}
+
+
+			payment.setPaymentMethod(method);
+			payment.setPaymentStatus(PaymentStatus.SUCCESS);
+
+			payment.setPaymentTime(LocalDateTime.now());
+
+			payment.setRide(ride);
+			ride.setPayment(payment);
 
 			em.merge(driver);
 			em.merge(ride);
