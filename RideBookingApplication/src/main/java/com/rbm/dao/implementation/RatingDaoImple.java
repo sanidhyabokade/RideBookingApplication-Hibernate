@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.RatingDao;
+import com.rbm.entity.Driver;
 import com.rbm.entity.Rating;
 import com.rbm.entity.Ride;
+import com.rbm.entity.Rider;
 import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
@@ -31,6 +33,10 @@ public class RatingDaoImple implements RatingDao{
 			System.err.println("Ride Not Found!");
 			return;
 		}
+		if (ride.getRating() != null) {
+			System.out.println("This ride has already been rated.");
+			return;
+		}
 
 		if(ride.getRideStatus() != RideStatus.COMPLETED) {
 			System.err.println("Ride Must Be Completed Before Rating!");
@@ -54,6 +60,18 @@ public class RatingDaoImple implements RatingDao{
 		rating.setDriver(ride.getDriver());
 		rating.setRider(ride.getRider());
 
+		Driver driver = ride.getDriver();
+		Rider rider = ride.getRider();
+
+		driver.setTotalRatings(driver.getTotalRatings() + 1);
+		driver.getRatingReceived().add(rating);
+		rider.getRatingsGiven().add(rating);
+		ride.setRating(rating);
+
+		double newAverage = (driver.getAverageRating() * (driver.getTotalRatings() - 1) + stars) / driver.getTotalRatings();
+
+		driver.setAverageRating(newAverage);
+
 		try {
 
 			et.begin();
@@ -62,6 +80,7 @@ public class RatingDaoImple implements RatingDao{
 
 			ride.setRating(rating);
 			em.merge(ride);
+			em.merge(driver);
 
 			et.commit();
 
@@ -111,15 +130,15 @@ public class RatingDaoImple implements RatingDao{
 	public Double getAverageDriverRating(int driverId) {
 		EntityManager em = emf.createEntityManager();
 
-	    TypedQuery<Double> query = em.createQuery("SELECT AVG(r.stars) FROM Rating r WHERE r.driver.userId = :driverId", Double.class);
+		TypedQuery<Double> query = em.createQuery("SELECT AVG(r.stars) FROM Rating r WHERE r.driver.userId = :driverId", Double.class);
 
-	    query.setParameter("driverId", driverId);
+		query.setParameter("driverId", driverId);
 
-	    Double average = query.getSingleResult();
+		Double average = query.getSingleResult();
 
-	    em.close();
+		em.close();
 
-	    return average == null ? 0.0 : average;
+		return average == null ? 0.0 : average;
 	}
 
 }

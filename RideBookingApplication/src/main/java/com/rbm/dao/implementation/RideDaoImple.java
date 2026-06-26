@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
+import com.rbm.dao.RatingDao;
 import com.rbm.dao.RideDao;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Payment;
@@ -295,6 +296,24 @@ public class RideDaoImple implements RideDao{
 			System.out.println("Ride Duration : "
 					+ duration + " Minutes");
 
+			System.out.println();
+			System.out.println("Would you like to rate your driver?");
+			System.out.println("1. Yes");
+			System.out.println("2. Skip");
+			int choice1 = sc.nextInt();
+			switch (choice1) {
+			case 1:
+				RatingDao rd = new RatingDaoImple();
+				rd.giveRating(rideId);
+				break;
+			case 2:
+
+				return;
+
+			default:
+				break;
+			}
+
 		} catch (Exception e) {
 
 			if(et.isActive()) {
@@ -374,11 +393,7 @@ public class RideDaoImple implements RideDao{
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		try {
 
-			TypedQuery<Ride> query = em.createQuery(
-					"SELECT r FROM Ride r " +
-							"WHERE r.driver.userId = :driverId " +
-							"AND (r.rideStatus = :accepted OR r.rideStatus = :started)",
-							Ride.class);
+			TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r WHERE r.driver.userId = :driverId AND (r.rideStatus = :accepted OR r.rideStatus = :started)", Ride.class);
 
 			query.setParameter("driverId", driverId);
 			query.setParameter("accepted", RideStatus.ACCEPTED);
