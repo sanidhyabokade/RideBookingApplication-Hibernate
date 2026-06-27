@@ -15,10 +15,15 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.util.AppUtil;
+import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 public class DriverServices {
 	Scanner sc = AppUtil.getScanner();
+	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	DriverDao dd = new DriverDaoImple();
 	UiUtil ui = new UiUtil();
 	RatingDao rad = new RatingDaoImple(); 
@@ -152,8 +157,43 @@ public class DriverServices {
 				System.out.println("----------------------------------------------------------------");
 				break;
 			case 9:
-				dd.updateDriver(driverId);
-				break;
+				EntityManager em = emf.createEntityManager();
+				Driver driver1 = em.find(Driver.class, driverId);
+				
+				while(true) {
+					System.out.println("Press 1 to Update Email");
+					System.out.println("Press 2 to Update Password");
+					System.out.println("Press 3 to Update Contact Number");
+					System.out.println("Press 4 to go back to previous menu");
+					int choice2 = sc.nextInt();
+					switch (choice2) {
+					case 1:
+						System.out.print("Enter New Email: ");
+						String email = sc.next();
+						driver1.setEmail(email);
+						dd.updateDriver(driver1);
+						em.close();
+						break;
+					case 2:
+						System.out.print("Enter New Password: ");
+						String password = sc.next();
+						driver1.setPassword(password);
+						em.close();
+						break;
+					case 3:
+						System.out.print("Enter New Contact Number: ");
+						long phoneNum = sc.nextLong();
+						driver1.setPhoneNUmber(phoneNum);
+						em.close();
+						break;
+					case 4:
+						return;
+
+					default:
+						System.err.println("Invaid Choice...!");
+						break;
+					}
+				}
 			case 10:
 				Double driverRating = rad.getAverageDriverRating(driverId);
 				System.out.println("Your current rating is: "+driverRating.toString());
