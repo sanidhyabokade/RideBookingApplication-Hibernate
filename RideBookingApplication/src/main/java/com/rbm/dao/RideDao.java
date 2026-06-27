@@ -6,7 +6,7 @@ import com.rbm.entity.Ride;
 
 public interface RideDao {
 
-	void bookRide(int riderId);
+	void bookRide(Ride ride);
 	
 	Ride getRideById(int rideId);
 	

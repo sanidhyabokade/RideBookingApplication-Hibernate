@@ -1,5 +1,6 @@
 package com.rbm.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +12,8 @@ import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
+import com.rbm.enums.RideStatus;
+import com.rbm.enums.VehicleType;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
@@ -53,18 +56,59 @@ public class RiderServices {
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
-				rd.bookRide(riderId);
+				
+					EntityManager em = emf.createEntityManager();
+					Rider rider = em.find(Rider.class, riderId);
+
+					if(rider == null) {
+
+						System.err.println("Rider Not Found!");
+						return;
+					}
+					
+					System.out.println("===============================");
+					System.out.println("==                           ==");
+					System.out.println("==        BOOK A RIDE        ==");
+					System.out.println("==                           ==");
+					System.out.println("===============================");
+					System.out.println();
+
+					System.out.print("Enter Pickup Location: ");
+					String pickUpLoc = sc.next();
+
+					System.out.print("Enter Destination: ");
+					String destination = sc.next();
+
+					System.out.print("Enter Distance(km): ");
+					double distance = sc.nextDouble();
+
+					VehicleType vehicleType = chooseVehicleType();
+
+					double fare = AppUtil.calculateFare(distance, vehicleType);
+
+					Ride ride = new Ride();
+					ride.setPickUpLoc(pickUpLoc);
+					ride.setDestination(destination);
+					ride.setDistance(distance);
+					ride.setFare(fare);
+					ride.setBookingTime(LocalDateTime.now());
+					ride.setRideStatus(RideStatus.REQUESTED);
+					ride.setRider(rider);
+					ride.setVehicleType(vehicleType);
+					rd.bookRide(ride);
+					System.out.println("Estimated Fare : ₹"+ fare);
+				
 				break;
 			case 2:
-				Ride ride = rd.viewCurrentRide(riderId);
-				if(ride == null) {
+				Ride ride1 = rd.viewCurrentRide(riderId);
+				if(ride1 == null) {
 			        System.out.println("No Current Ride Found!");
 			    } else {
 					System.out.println("------------ Current Ride  -------------");
-			    	System.out.println("Ride ID: "+ride.getRideId());
-					System.out.println("Pickup Location: "+ride.getPickUpLoc());
-					System.out.println("Drop Location: "+ride.getDestination());
-					System.out.println("Fare: "+ride.getFare());
+			    	System.out.println("Ride ID: "+ride1.getRideId());
+					System.out.println("Pickup Location: "+ride1.getPickUpLoc());
+					System.out.println("Drop Location: "+ride1.getDestination());
+					System.out.println("Fare: "+ride1.getFare());
 					System.out.println();
 					System.out.println("----------------------------------------");
 			    }
@@ -104,8 +148,8 @@ public class RiderServices {
 				rid.viewProfile(riderId);
 				break;
 			case 6:
-				EntityManager em = emf.createEntityManager();
-				Rider rider = em.find(Rider.class, riderId);
+				EntityManager em1 = emf.createEntityManager();
+				Rider rider1 = em1.find(Rider.class, riderId);
 				
 				while(true) {
 					System.out.println("Press 1 to Update Email");
@@ -117,23 +161,23 @@ public class RiderServices {
 					case 1:
 						System.out.print("Enter New Email: ");
 						String email = sc.next();
-						rider.setEmail(email);
-						rid.updateRider(rider);
-						em.close();
+						rider1.setEmail(email);
+						rid.updateRider(rider1);
+						em1.close();
 						break;
 					case 2:
 						System.out.print("Enter New Password: ");
 						String password = sc.next();
-						rider.setPassword(password);
-						rid.updateRider(rider);
-						em.close();
+						rider1.setPassword(password);
+						rid.updateRider(rider1);
+						em1.close();
 						break;
 					case 3:
 						System.out.print("Enter New Contact Number: ");
 						long phoneNum = sc.nextLong();
-						rider.setPhoneNUmber(phoneNum);
-						rid.updateRider(rider);
-						em.close();
+						rider1.setPhoneNUmber(phoneNum);
+						rid.updateRider(rider1);
+						em1.close();
 						break;
 					case 4:
 						return;
@@ -153,4 +197,38 @@ public class RiderServices {
 			}
 		}
 	}
+		private VehicleType chooseVehicleType() {
+
+			while(true) {
+
+				System.out.println("1.BIKE");
+				System.out.println("2.AUTO");
+				System.out.println("3.MINI");
+				System.out.println("4.SEDAN");
+				System.out.println("5.SUV");
+
+				int choice = sc.nextInt();
+
+				switch(choice) {
+
+				case 1:
+					return VehicleType.BIKE;
+
+				case 2:
+					return VehicleType.AUTO;
+
+				case 3:
+					return VehicleType.MINI;
+
+				case 4:
+					return VehicleType.SEDAN;
+
+				case 5:
+					return VehicleType.SUV;
+
+				default:
+					System.out.println("Invalid Choice!");
+				}
+			}
+		}
 }
