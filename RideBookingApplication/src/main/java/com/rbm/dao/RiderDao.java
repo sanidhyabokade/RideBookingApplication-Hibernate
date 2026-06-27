@@ -7,7 +7,7 @@ import com.rbm.entity.Rider;
 
 public interface RiderDao {
 	
-	void registerRider();
+	void registerRider(Rider rider);
 	
 	Rider getRiderById(int riderId);
 	

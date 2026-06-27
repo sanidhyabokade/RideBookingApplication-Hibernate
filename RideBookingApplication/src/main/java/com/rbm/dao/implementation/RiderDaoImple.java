@@ -23,39 +23,15 @@ public class RiderDaoImple implements RiderDao{
 	Scanner sc = AppUtil.getScanner();
 	
 	@Override
-	public void registerRider() {
+	public void registerRider(Rider rider) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		
-		Rider r = new Rider();
-
-		System.out.println("===============================");
-		System.out.println("==                           ==");
-		System.out.println("==    Rider REGISTRATION     ==");
-		System.out.println("==                           ==");
-		System.out.println("===============================");
-		System.out.println();
-
-		System.out.print("Enter Your Name: ");
-		String name = sc.next();
-
-		System.out.print("Enter Your Email: ");
-		String email = sc.next();
-
-		System.out.print("Enter Your Password: ");
-		String password = sc.next();
-
-		System.out.print("Enter Your Contact Number: ");
-		long contactNumber = sc.nextLong();
 		
-		r.setName(name);
-		r.setEmail(email);
-		r.setPassword(password);
-		r.setPhoneNUmber(contactNumber);
 		
 		try {
 			et.begin();
-			em.persist(r);
+			em.persist(rider);
 			et.commit();
 			System.out.println("Rider Registered Successfully!");
 		} catch (Exception e) {
