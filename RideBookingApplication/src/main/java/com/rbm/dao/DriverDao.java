@@ -8,7 +8,7 @@ import com.rbm.enums.DriverAvailablity;
 
 public interface DriverDao {
 	
-	void registerDriver();
+	void registerDriver(Driver driver);
 	
 	void loginAsDriver(String email, String password);
 	
