@@ -15,7 +15,7 @@ public interface RiderDao {
 	
 	void loginAsRider(String email, String password);
 	
-	void updateRider(int riderId);
+	void updateRider(Rider rider);
 	
 	void deleteRider(int riderId);
 	

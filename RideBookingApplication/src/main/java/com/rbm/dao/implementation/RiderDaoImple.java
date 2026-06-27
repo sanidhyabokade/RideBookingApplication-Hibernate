@@ -64,84 +64,24 @@ public class RiderDaoImple implements RiderDao{
 	}
 
 	@Override
-	public void updateRider(int riderId) {
+	public void updateRider(Rider rider) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		
-		Rider rider = em.find(Rider.class, riderId);
-		
-		while(true) {
-			System.out.println("Press 1 to Update Email");
-			System.out.println("Press 2 to Update Password");
-			System.out.println("Press 3 to Update Contact Number");
-			System.out.println("Press 4 to go back to previous menu");
-			int choice = sc.nextInt();
-			switch (choice) {
-			case 1:
-				System.out.print("Enter New Email: ");
-				String email = sc.next();
-				rider.setEmail(email);
-				try {
-					et.begin();
-					em.merge(rider);
-					et.commit();
-					System.out.println("Email Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Email Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 2:
-				System.out.print("Enter New Password: ");
-				String password = sc.next();
-				rider.setPassword(password);
-				try {
-					et.begin();
-					em.merge(rider);
-					et.commit();
-					System.out.println("Password Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Password Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 3:
-				System.out.print("Enter New Contact Number: ");
-				long phoneNum = sc.nextLong();
-				rider.setPhoneNUmber(phoneNum);
-				try {
-					et.begin();
-					em.merge(rider);
-					et.commit();
-					System.out.println("Contact Number Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Contact Number Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 4:
-				return;
-
-			default:
-				System.err.println("Invaid Choice...!");
-				break;
+		try {
+			et.begin();
+			em.merge(rider);
+			et.commit();
+			System.out.println("Rider Updated Successfully!");
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
 			}
+			System.err.println("Updating Rider Failed...!");
 		}
+		finally {
+			em.close();
+		}
+		
 		
 	}
 

@@ -10,11 +10,17 @@ import com.rbm.dao.implementation.RatingDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Ride;
+import com.rbm.entity.Rider;
 import com.rbm.util.AppUtil;
+import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 public class RiderServices {
 	Scanner sc = AppUtil.getScanner();
+	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	UiUtil ui = new UiUtil();
 	RiderDao rid = new RiderDaoImple();
 	RideDao rd = new RideDaoImple();
@@ -98,8 +104,45 @@ public class RiderServices {
 				rid.viewProfile(riderId);
 				break;
 			case 6:
-				rid.updateRider(riderId);
-				break;
+				EntityManager em = emf.createEntityManager();
+				Rider rider = em.find(Rider.class, riderId);
+				
+				while(true) {
+					System.out.println("Press 1 to Update Email");
+					System.out.println("Press 2 to Update Password");
+					System.out.println("Press 3 to Update Contact Number");
+					System.out.println("Press 4 to go back to previous menu");
+					int choice1 = sc.nextInt();
+					switch (choice1) {
+					case 1:
+						System.out.print("Enter New Email: ");
+						String email = sc.next();
+						rider.setEmail(email);
+						rid.updateRider(rider);
+						em.close();
+						break;
+					case 2:
+						System.out.print("Enter New Password: ");
+						String password = sc.next();
+						rider.setPassword(password);
+						rid.updateRider(rider);
+						em.close();
+						break;
+					case 3:
+						System.out.print("Enter New Contact Number: ");
+						long phoneNum = sc.nextLong();
+						rider.setPhoneNUmber(phoneNum);
+						rid.updateRider(rider);
+						em.close();
+						break;
+					case 4:
+						return;
+
+					default:
+						System.err.println("Invaid Choice...!");
+						break;
+					}
+				}
 			case 7:
 				System.out.println("Exiting...!");
 				return;
