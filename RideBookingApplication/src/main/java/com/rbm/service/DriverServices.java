@@ -14,6 +14,8 @@ import com.rbm.dao.implementation.VehicleDaoImple;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
+import com.rbm.enums.PaymentStatus;
+import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
@@ -101,8 +103,16 @@ public class DriverServices {
 				break;
 			case 5:
 				Ride currentRide2 = rd.viewCurrentRide(driverId);
-				int rideId2 = currentRide2.getRideId();
-				rd.completeRide(rideId2);
+				if(currentRide2.getPayment().getPaymentStatus().equals(PaymentStatus.SUCCESS)) {
+					currentRide2.setRideStatus(RideStatus.COMPLETED);
+				}else {
+					currentRide2.getPayment().setPaymentStatus(PaymentStatus.PENDING);
+				}
+				Driver driverById = dd.getDriverById(driverId);
+				if(currentRide2.getRideStatus().equals(RideStatus.COMPLETED)) {
+					driverById.setDriverAvailability(DriverAvailablity.ONLINE);
+				}
+				rd.completeRide(currentRide2, driverById);
 				break;
 			case 6:
 				List<Ride> completedRides = rd.getCompletedRides();

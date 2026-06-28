@@ -2,6 +2,7 @@ package com.rbm.dao;
 
 import java.util.List;
 
+import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 
 public interface RideDao {
@@ -22,7 +23,7 @@ public interface RideDao {
 	
 	void cancelRide(int rideId);
 	
-	void completeRide(int rideId);
+	void completeRide(Ride ride, Driver driver);
 	
 	List<Ride> viewAvailableRides();
 	

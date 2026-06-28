@@ -1,18 +1,13 @@
 package com.rbm.dao.implementation;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
-import com.rbm.dao.RatingDao;
 import com.rbm.dao.RideDao;
 import com.rbm.entity.Driver;
-import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
-import com.rbm.enums.PaymentMethod;
-import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
@@ -145,122 +140,15 @@ public class RideDaoImple implements RideDao{
 	}
 
 	@Override
-	public void completeRide(int rideId) {
+	public void completeRide(Ride ride, Driver driver) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
-
-			Ride ride = em.find(Ride.class, rideId);
-
-			if(ride == null) {
-				System.err.println("Ride Not Found!");
-				return;
-			}
-
-			if(ride.getRideStatus() != RideStatus.STARTED) {
-				System.err.println("Ride must be IN_PROGRESS!");
-				return;
-			}
-
-			Driver driver = ride.getDriver();
-
 			et.begin();
-
-			ride.setRideStatus(RideStatus.COMPLETED);
-
-			LocalDateTime endTime = LocalDateTime.now();
-
-			ride.setEndTime(endTime);
-
-			int duration = (int) Duration.between(
-					ride.getStartTime(),
-					endTime
-					).toMinutes();
-
-			ride.setDuration(duration);
-
-			driver.setTotalEarnings(
-					driver.getTotalEarnings()
-					+ ride.getFare());
-
-			driver.setTotalRidesCompleted(
-					driver.getTotalRidesCompleted()
-					+ 1);
-
-			driver.setDriverAvailability(
-					DriverAvailablity.ONLINE);
-
-			Payment payment = new Payment();
-
-			payment.setRide(ride);
-			payment.setAmount(ride.getFare());
-
-			PaymentMethod method = null;
-			System.out.println("*CHOOSE PAYMENT MODE*");
-
-
-			System.out.println("1.UPI");
-			System.out.println("2.CARD");
-			System.out.println("3.CASH");
-
-			int choice = sc.nextInt();
-
-			switch(choice) {
-
-			case 1:
-				method = PaymentMethod.UPI;
-				break;
-
-			case 2:
-				method = PaymentMethod.CARD;
-				break;
-
-			case 3:
-				method = PaymentMethod.CASH;
-				break;
-
-			default:
-				System.out.println("Invalid Choice!");
-				return;
-			}
-
-
-			payment.setPaymentMethod(method);
-			payment.setPaymentStatus(PaymentStatus.SUCCESS);
-
-			payment.setPaymentTime(LocalDateTime.now());
-
-			payment.setRide(ride);
-			ride.setPayment(payment);
-
 			em.merge(driver);
 			em.merge(ride);
-
 			et.commit();
-
-			System.out.println("Ride Completed Successfully!");
-			System.out.println("Ride Duration : "
-					+ duration + " Minutes");
-
-			System.out.println();
-			System.out.println("Would you like to rate your driver?");
-			System.out.println("1. Yes");
-			System.out.println("2. Skip");
-			int choice1 = sc.nextInt();
-			switch (choice1) {
-			case 1:
-				RatingDao rd = new RatingDaoImple();
-				rd.giveRating(rideId);
-				break;
-			case 2:
-
-				return;
-
-			default:
-				break;
-			}
-
 		} catch (Exception e) {
 
 			if(et.isActive()) {

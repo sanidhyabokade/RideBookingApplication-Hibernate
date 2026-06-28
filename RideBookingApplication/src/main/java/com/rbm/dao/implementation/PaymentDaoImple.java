@@ -27,7 +27,7 @@ public class PaymentDaoImple implements PaymentDao{
 
 			et.begin();
 
-			em.persist(payment);
+			em.merge(payment);
 
 			et.commit();
 
