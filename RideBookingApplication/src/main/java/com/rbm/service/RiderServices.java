@@ -22,15 +22,12 @@ import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
 import com.rbm.util.AppUtil;
-import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+
 
 public class RiderServices {
 	Scanner sc = AppUtil.getScanner();
-	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	UiUtil ui = new UiUtil();
 	RiderDao rid = new RiderDaoImple();
 	RideDao rd = new RideDaoImple();
@@ -182,14 +179,13 @@ public class RiderServices {
 			    }
 				break;
 			case 3:
-				EntityManager em1 = emf.createEntityManager();
-				Rider rider2 = em1.find(Rider.class, riderId);
+				Rider rider2 = rid.getRiderById(riderId);
 				
 				Ride last = rider2.getRides().getLast();
 				
 				int rideId2 = last.getRideId();
 				
-				Ride ride2 = em1.find(Ride.class, rideId2);
+				Ride ride2 = rd.getRideById(rideId2);
 
 				if(ride2 == null) {
 					System.err.println("Ride Not Found!");
@@ -328,8 +324,7 @@ public class RiderServices {
 				rid.viewProfile(riderId);
 				break;
 			case 7:
-				EntityManager em2 = emf.createEntityManager();
-				Rider rider1 = em2.find(Rider.class, riderId);
+				Rider rider1 = rid.getRiderById(riderId);
 				
 				while(true) {
 					System.out.println("Press 1 to Update Email");
@@ -343,21 +338,18 @@ public class RiderServices {
 						String email = sc.next();
 						rider1.setEmail(email);
 						rid.updateRider(rider1);
-						em2.close();
 						break;
 					case 2:
 						System.out.print("Enter New Password: ");
 						String password = sc.next();
 						rider1.setPassword(password);
 						rid.updateRider(rider1);
-						em2.close();
 						break;
 					case 3:
 						System.out.print("Enter New Contact Number: ");
 						long phoneNum = sc.nextLong();
 						rider1.setPhoneNUmber(phoneNum);
 						rid.updateRider(rider1);
-						em2.close();
 						break;
 					case 4:
 						return;

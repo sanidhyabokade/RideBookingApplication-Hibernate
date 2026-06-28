@@ -17,15 +17,12 @@ import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.util.AppUtil;
-import com.rbm.util.JpaUtil;
 import com.rbm.util.UiUtil;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+
 
 public class DriverServices {
 	Scanner sc = AppUtil.getScanner();
-	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	DriverDao dd = new DriverDaoImple();
 	UiUtil ui = new UiUtil();
 	RatingDao rad = new RatingDaoImple(); 
@@ -167,8 +164,7 @@ public class DriverServices {
 				System.out.println("----------------------------------------------------------------");
 				break;
 			case 9:
-				EntityManager em = emf.createEntityManager();
-				Driver driver1 = em.find(Driver.class, driverId);
+				Driver driver1 = dd.getDriverById(driverId);
 				
 				while(true) {
 					System.out.println("Press 1 to Update Email");
@@ -182,19 +178,16 @@ public class DriverServices {
 						String email = sc.next();
 						driver1.setEmail(email);
 						dd.updateDriver(driver1);
-						em.close();
 						break;
 					case 2:
 						System.out.print("Enter New Password: ");
 						String password = sc.next();
 						driver1.setPassword(password);
-						em.close();
 						break;
 					case 3:
 						System.out.print("Enter New Contact Number: ");
 						long phoneNum = sc.nextLong();
 						driver1.setPhoneNUmber(phoneNum);
-						em.close();
 						break;
 					case 4:
 						return;
