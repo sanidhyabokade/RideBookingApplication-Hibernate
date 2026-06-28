@@ -8,7 +8,7 @@ import com.rbm.enums.DriverAvailablity;
 
 public interface DriverDao {
 	
-	void registerDriver(Driver driver);
+	boolean registerDriver(Driver driver);
 	
 	void loginAsDriver(String email, String password);
 	
@@ -16,11 +16,11 @@ public interface DriverDao {
 	
 	List<Ride> getDriverRideHistory(int driverId);
 	
-	void updateDriver(Driver driver);
+	boolean updateDriver(Driver driver);
 	
-	void changeAvailability(int driverId, DriverAvailablity availablity);
+	boolean changeAvailability(int driverId, DriverAvailablity availablity);
 	
-	void deleteDriver(int driverId);
+	boolean deleteDriver(int driverId);
 	
 	int getTotalRides(int driverId);
 	

@@ -2,11 +2,13 @@ package com.rbm.dao;
 
 import java.util.List;
 
+import com.rbm.entity.Driver;
 import com.rbm.entity.Rating;
+import com.rbm.entity.Ride;
 
 public interface RatingDao {
 	
-	void giveRating(int rideId);
+	boolean giveRating(Rating rating, Ride ride, Driver driver);
 	
 	Rating getRatingById(int ratingId);
 	

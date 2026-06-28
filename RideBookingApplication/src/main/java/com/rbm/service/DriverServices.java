@@ -13,9 +13,11 @@ import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.VehicleDaoImple;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
+import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
+import com.rbm.enums.VehicleType;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
@@ -148,7 +150,12 @@ public class DriverServices {
 				        return;
 				}
 
-				dd.changeAvailability(driverId, availability);
+				boolean changeAvailability = dd.changeAvailability(driverId, availability);
+				if(changeAvailability) {
+					System.out.println("Driver Availability Changed Successfully!");
+				}else {
+					System.err.println("Changing Driver Availability Failed...!");
+				}
 				break;
 			case 8:
 				Driver driver = dd.getDriverById(driverId);
@@ -177,17 +184,34 @@ public class DriverServices {
 						System.out.print("Enter New Email: ");
 						String email = sc.next();
 						driver1.setEmail(email);
-						dd.updateDriver(driver1);
+						boolean updateDriver1 = dd.updateDriver(driver1);
+						if(updateDriver1) {
+							System.out.println("Profile Updated Successfully!");
+						}else {
+							System.err.println("Updating Profile Failed...!");
+						}
 						break;
 					case 2:
 						System.out.print("Enter New Password: ");
 						String password = sc.next();
 						driver1.setPassword(password);
+						boolean updateDriver2 = dd.updateDriver(driver1);
+						if(updateDriver2) {
+							System.out.println("Profile Updated Successfully!");
+						}else {
+							System.err.println("Updating Profile Failed...!");
+						}
 						break;
 					case 3:
 						System.out.print("Enter New Contact Number: ");
 						long phoneNum = sc.nextLong();
 						driver1.setPhoneNUmber(phoneNum);
+						boolean updateDriver3 = dd.updateDriver(driver1);
+						if(updateDriver3) {
+							System.out.println("Profile Updated Successfully!");
+						}else {
+							System.err.println("Updating Profile Failed...!");
+						}
 						break;
 					case 4:
 						return;
@@ -211,7 +235,41 @@ public class DriverServices {
 				vd.getVehicleById(vehicleId);
 				return;
 			case 13:
-				vd.updateVehicle(dd.getDriverById(driverId).getVehicle().getVehicleId());
+				Driver driver3 = dd.getDriverById(driverId);
+				Vehicle vehicle = driver3.getVehicle();
+				System.out.print("Enter New Vehicle Number: ");
+			    String num = sc.next();
+			    
+			    VehicleType type = null;
+			    
+			    while(type == null) {
+
+					System.out.print("Enter Your Vehicle Type(BIKE, AUTO, MINI, SEDAN, SUV): ");
+					String choice2= sc.next();
+
+					if(choice2.equalsIgnoreCase("BIKE")) {
+						type = VehicleType.BIKE;
+					}else if(choice2.equalsIgnoreCase("AUTO")) {
+						type = VehicleType.AUTO;
+					}else if(choice2.equalsIgnoreCase("MINI")) {
+						type = VehicleType.MINI;
+					}else if(choice2.equalsIgnoreCase("SEDAN")) {
+						type = VehicleType.SEDAN;
+					}else if(choice2.equalsIgnoreCase("SUV")) {
+						type = VehicleType.SUV;
+					}else {
+						System.err.println("Enter A Valid Type...!");
+					}
+				}
+			    
+			    vehicle.setVehicleNumber(num);
+			    vehicle.setVehicleType(type);
+				boolean updateVehicle = vd.updateVehicle(vehicle);
+				if(updateVehicle) {
+					System.out.println("Vehicle Updated Successfully!");
+				}else {
+					System.err.println("Updating Vehicle Failed...!");
+				}
 				return;
 			case 14:
 				System.out.println();

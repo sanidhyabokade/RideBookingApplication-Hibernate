@@ -1,14 +1,12 @@
 package com.rbm.dao.implementation;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.DriverDao;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.service.DriverServices;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -23,10 +21,10 @@ import jakarta.persistence.criteria.Root;
 public class DriverDaoImple implements DriverDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	Scanner sc = AppUtil.getScanner();
+	
 
 	@Override
-	public void registerDriver(Driver driver) {
+	public boolean registerDriver(Driver driver) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
@@ -34,12 +32,12 @@ public class DriverDaoImple implements DriverDao{
 			et.begin();
 			em.persist(driver);
 			et.commit();
-			System.out.println("Driver Registered Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Registration Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -64,7 +62,7 @@ public class DriverDaoImple implements DriverDao{
 	}
 
 	@Override
-	public void updateDriver(Driver driver) {
+	public boolean updateDriver(Driver driver) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		
@@ -72,12 +70,12 @@ public class DriverDaoImple implements DriverDao{
 			et.begin();
 			em.merge(driver);
 			et.commit();
-			System.out.println("Profile Updated Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Updating Profile Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -86,7 +84,7 @@ public class DriverDaoImple implements DriverDao{
 	}
 
 	@Override
-	public void changeAvailability(int driverId, DriverAvailablity availablity) {
+	public boolean changeAvailability(int driverId, DriverAvailablity availablity) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
@@ -95,12 +93,12 @@ public class DriverDaoImple implements DriverDao{
 			et.begin();
 			em.merge(driver);
 			et.commit();
-			System.out.println("Driver Availability Changed Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Changing Driver Availability Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -108,7 +106,7 @@ public class DriverDaoImple implements DriverDao{
 	}
 
 	@Override
-	public void deleteDriver(int driverId) {
+	public boolean deleteDriver(int driverId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
@@ -116,12 +114,12 @@ public class DriverDaoImple implements DriverDao{
 			et.begin();
 			em.remove(driver);
 			et.commit();
-			System.out.println("Driver Removed Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Removing Driver Failed...!");
+			return false;
 		}
 		finally {
 			em.close();

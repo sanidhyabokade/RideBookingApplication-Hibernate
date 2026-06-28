@@ -11,6 +11,7 @@ import com.rbm.dao.implementation.AdminDaoImple;
 import com.rbm.dao.implementation.DriverDaoImple;
 import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
+import com.rbm.entity.Admin;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
@@ -161,23 +162,85 @@ public class AdminServices {
 				System.out.println();
 				System.out.print("Enter Rider ID: ");
 				int riderId = sc.nextInt();
-				ad.deleteRider(riderId);
+				boolean deleteRider = ad.deleteRider(riderId);
+				if(deleteRider) {
+					System.out.println("Rider Removed Successfully!");
+				}else {
+					System.err.println("Removing Rider Failed...!");
+				}
 				break;
 			case 11:
 				System.out.println();
 				System.out.print("Enter Driver ID: ");
 				int driverId = sc.nextInt();
-				ad.deleteRider(driverId);
+				boolean deleteDriver = ad.deleteDriver(driverId);
+				if(deleteDriver) {
+					System.out.println("Driver Removed Successfully...!");
+				}else {
+					System.err.println("Removing Driver Failed!");
+				}
 				break;
 			case 12:
 				System.out.println("--------------------------------------------------------------------");
-				ad.viewAdminProfile();
+				Admin adminProfile = ad.viewAdminProfile();
+				System.out.println("======== ADMIN PROFILE ========");
+				System.out.println("ID      : " + adminProfile.getUserId());
+				System.out.println("Name    : " + adminProfile.getName());
+				System.out.println("Email   : " + adminProfile.getEmail());
+				System.out.println("Phone   : " + adminProfile.getPhoneNUmber());
 				System.out.println("--------------------------------------------------------------------");
 				break;
 			case 13:
 				System.out.println();
-				ad.updateAdmin();
-				break;
+				Admin admin = ad.getAdminById(adminId);
+				while(true) {
+					System.out.println("Press 1 to Update Email");
+					System.out.println("Press 2 to Update Password");
+					System.out.println("Press 3 to Update Contact Number");
+					System.out.println("Press 4 to go back to previous menu");
+					int choice1 = sc.nextInt();
+					switch (choice1) {
+					case 1:
+						System.out.print("Enter New Email: ");
+						String email = sc.next();
+						admin.setEmail(email);
+						boolean updateAdmin1 = ad.updateAdmin(admin);
+						if(updateAdmin1) {
+							System.out.println("Admin Updated Successfully!");
+						}else {
+							System.err.println("Updating Admin failed...!");
+						}
+						break;
+					case 2:
+						System.out.print("Enter New Password: ");
+						String password = sc.next();
+						admin.setPassword(password);
+						boolean updateAdmin2 = ad.updateAdmin(admin);
+						if(updateAdmin2) {
+							System.out.println("Admin Updated Successfully!");
+						}else {
+							System.err.println("Updating Admin failed...!");
+						}
+						break;
+					case 3:
+						System.out.print("Enter New Contact Number: ");
+						long phoneNum = sc.nextLong();
+						admin.setPhoneNUmber(phoneNum);
+						boolean updateAdmin3 = ad.updateAdmin(admin);
+						if(updateAdmin3) {
+							System.out.println("Admin Updated Successfully!");
+						}else {
+							System.err.println("Updating Admin failed...!");
+						}
+						break;
+					case 4:
+						return;
+
+					default:
+						System.err.println("Invaid Choice...!");
+						break;
+					}
+				}
 			case 14:
 				System.out.println();
 				System.out.println("Exiting...!");

@@ -1,12 +1,9 @@
 package com.rbm.dao.implementation;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.VehicleDao;
 import com.rbm.entity.Vehicle;
-import com.rbm.enums.VehicleType;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -16,7 +13,6 @@ import jakarta.persistence.TypedQuery;
 
 public class VehicleDaoImple implements VehicleDao{
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	Scanner sc = AppUtil.getScanner();
 	@Override
 	public void addVehicle(Vehicle vehicle) {
 		EntityManager em = emf.createEntityManager();
@@ -59,43 +55,9 @@ public class VehicleDaoImple implements VehicleDao{
 
 
 	@Override
-	public void updateVehicle(int vehicleId) {
+	public boolean updateVehicle(Vehicle vehicle) {
 		EntityManager em = emf.createEntityManager();
 	    EntityTransaction et = em.getTransaction();
-
-	    Vehicle vehicle = em.find(Vehicle.class, vehicleId);
-	    
-	    if(vehicle == null) {
-	    	System.err.println("Invalid Vehicle ID!");
-	    }
-	    
-	    System.out.print("Enter New Vehicle Number: ");
-	    String num = sc.next();
-	    
-	    VehicleType type = null;
-	    
-	    while(type == null) {
-
-			System.out.print("Enter Your Vehicle Type(BIKE, AUTO, MINI, SEDAN, SUV): ");
-			String choice = sc.next();
-
-			if(choice.equalsIgnoreCase("BIKE")) {
-				type = VehicleType.BIKE;
-			}else if(choice.equalsIgnoreCase("AUTO")) {
-				type = VehicleType.AUTO;
-			}else if(choice.equalsIgnoreCase("MINI")) {
-				type = VehicleType.MINI;
-			}else if(choice.equalsIgnoreCase("SEDAN")) {
-				type = VehicleType.SEDAN;
-			}else if(choice.equalsIgnoreCase("SUV")) {
-				type = VehicleType.SUV;
-			}else {
-				System.err.println("Enter A Valid Type...!");
-			}
-		}
-	    
-	    vehicle.setVehicleNumber(num);
-	    vehicle.setVehicleType(type);
 	    
 	    try {
 
@@ -105,7 +67,7 @@ public class VehicleDaoImple implements VehicleDao{
 
 	        et.commit();
 
-	        System.out.println("Vehicle Updated Successfully!");
+	        return true;
 
 	    } catch (Exception e) {
 
@@ -113,7 +75,7 @@ public class VehicleDaoImple implements VehicleDao{
 	            et.rollback();
 	        }
 
-	        System.err.println("Updating Vehicle Failed...!");
+	        return false;
 
 	    } finally {
 	        em.close();

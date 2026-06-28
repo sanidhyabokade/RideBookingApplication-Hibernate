@@ -1,7 +1,6 @@
 package com.rbm.dao.implementation;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.AdminDao;
 import com.rbm.entity.Admin;
@@ -11,7 +10,6 @@ import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.enums.RideStatus;
 import com.rbm.service.AdminServices;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -24,7 +22,6 @@ import jakarta.persistence.criteria.Root;
 
 public class AdminDaoImple implements AdminDao {
 
-	Scanner sc = AppUtil.getScanner();
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
 	@Override
@@ -113,7 +110,7 @@ public class AdminDaoImple implements AdminDao {
 	}
 
 	@Override
-	public void deleteRider(int riderId) {
+	public boolean deleteRider(int riderId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Rider rider = em.find(Rider.class, riderId);
@@ -121,12 +118,12 @@ public class AdminDaoImple implements AdminDao {
 			et.begin();
 			em.remove(rider);
 			et.commit();
-			System.out.println("Rider Removed Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Removing Rider Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -135,7 +132,7 @@ public class AdminDaoImple implements AdminDao {
 	}
 
 	@Override
-	public void deleteDriver(int driverId) {
+	public boolean deleteDriver(int driverId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Admin driver = em.find(Admin.class, driverId);
@@ -143,12 +140,12 @@ public class AdminDaoImple implements AdminDao {
 			et.begin();
 			em.remove(driver);
 			et.commit();
-			System.out.println("Driver Removed Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Removing Driver Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -157,96 +154,33 @@ public class AdminDaoImple implements AdminDao {
 	}
 
 	@Override
-	public void viewAdminProfile() {
+	public Admin viewAdminProfile() {
 		EntityManager em = emf.createEntityManager();
 		Admin admin = em.find(Admin.class, 2);
-		System.out.println("======== ADMIN PROFILE ========");
-		System.out.println("ID      : " + admin.getUserId());
-		System.out.println("Name    : " + admin.getName());
-		System.out.println("Email   : " + admin.getEmail());
-		System.out.println("Phone   : " + admin.getPhoneNUmber());
-		System.out.println();
+		return admin;
 
 	}
 
 	@Override
-	public void updateAdmin() {
+	public boolean updateAdmin(Admin admin) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		Admin admin = em.find(Admin.class, 2);
-
-		while(true) {
-			System.out.println("Press 1 to Update Email");
-			System.out.println("Press 2 to Update Password");
-			System.out.println("Press 3 to Update Contact Number");
-			System.out.println("Press 4 to go back to previous menu");
-			int choice = sc.nextInt();
-			switch (choice) {
-			case 1:
-				System.out.print("Enter New Email: ");
-				String email = sc.next();
-				admin.setEmail(email);
-				try {
-					et.begin();
-					em.merge(admin);
-					et.commit();
-					System.out.println("Email Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Email Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 2:
-				System.out.print("Enter New Password: ");
-				String password = sc.next();
-				admin.setPassword(password);
-				try {
-					et.begin();
-					em.merge(admin);
-					et.commit();
-					System.out.println("Password Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Password Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 3:
-				System.out.print("Enter New Contact Number: ");
-				long phoneNum = sc.nextLong();
-				admin.setPhoneNUmber(phoneNum);
-				try {
-					et.begin();
-					em.merge(admin);
-					et.commit();
-					System.out.println("Contact Number Updated Successfully!");
-				} catch (Exception e) {
-					if(et.isActive()) {
-						et.rollback();
-					}
-					System.err.println("Updating Contact Number Failed...!");
-				}
-				finally {
-					em.close();
-				}
-				break;
-			case 4:
-				return;
-
-			default:
-				System.err.println("Invaid Choice...!");
-				break;
+		
+		try {
+			et.begin();
+			em.merge(admin);
+			et.commit();
+			return true;
+		} catch (Exception e) {
+			if(et.isActive()) {
+				et.rollback();
 			}
+			return false;
 		}
+		finally {
+			em.close();
+		}
+		
 
 	}
 
@@ -281,6 +215,13 @@ public class AdminDaoImple implements AdminDao {
 			as.adminDashboard(admin.getUserId(), greetings);
 		}
 		
+	}
+
+	@Override
+	public Admin getAdminById(int adminId) {
+		EntityManager em = emf.createEntityManager();
+		Admin admin = em.find(Admin.class, adminId);
+		return admin;
 	}
 
 }

@@ -96,7 +96,12 @@ public class DriverController {
 		driver.setCreatedAt(LocalDateTime.now());
 		driver.setVehicle(v);
 
-		dao.registerDriver(driver);
+		boolean registerDriver = dao.registerDriver(driver);
+		if(registerDriver) {
+			System.out.println("Driver Registered Successfully!");
+		}else {
+			System.err.println("Registration Failed...!");
+		}
 	}
 	
 	public void driverLogin(String email, String password) {

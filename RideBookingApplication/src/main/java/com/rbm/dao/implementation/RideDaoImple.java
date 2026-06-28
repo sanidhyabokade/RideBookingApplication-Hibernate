@@ -2,14 +2,12 @@ package com.rbm.dao.implementation;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.RideDao;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.RideStatus;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -23,7 +21,6 @@ import jakarta.persistence.criteria.Root;
 public class RideDaoImple implements RideDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	Scanner sc = AppUtil.getScanner();
 
 	@Override
 	public void bookRide(Ride ride) {

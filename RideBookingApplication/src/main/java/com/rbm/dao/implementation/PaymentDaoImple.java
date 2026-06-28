@@ -1,11 +1,9 @@
 package com.rbm.dao.implementation;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.PaymentDao;
 import com.rbm.entity.Payment;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -16,10 +14,9 @@ import jakarta.persistence.TypedQuery;
 public class PaymentDaoImple implements PaymentDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	Scanner sc = AppUtil.getScanner();
 
 	@Override
-	public void makePayment(Payment payment) {
+	public boolean makePayment(Payment payment) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
@@ -30,16 +27,15 @@ public class PaymentDaoImple implements PaymentDao{
 			em.merge(payment);
 
 			et.commit();
-
-			System.out.println("Payment Successful!");
+			
+			return true;
 
 		} catch (Exception e) {
 
 			if(et.isActive()) {
 				et.rollback();
 			}
-
-			System.err.println("Payment Failed!");
+			return false;
 
 		} finally {
 			em.close();

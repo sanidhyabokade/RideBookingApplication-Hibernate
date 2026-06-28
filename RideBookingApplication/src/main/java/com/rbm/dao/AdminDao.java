@@ -2,6 +2,7 @@ package com.rbm.dao;
 
 import java.util.List;
 
+import com.rbm.entity.Admin;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
@@ -27,13 +28,15 @@ public interface AdminDao {
 	
 	List<Payment> getAllPayments();
 	
-	void deleteRider(int riderId);
+	boolean deleteRider(int riderId);
 
-    void deleteDriver(int driverId);
+    boolean deleteDriver(int driverId);
 	
-	void viewAdminProfile();
+	Admin viewAdminProfile();
 	
-	void updateAdmin();
+	boolean updateAdmin(Admin admin);
 	
 	Double getTotalRevenue();
+	
+	Admin getAdminById(int adminId);
 }

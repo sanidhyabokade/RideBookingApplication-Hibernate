@@ -6,7 +6,7 @@ import com.rbm.entity.Payment;
 
 public interface PaymentDao {
 	
-	void makePayment(Payment payment);
+	boolean makePayment(Payment payment);
 	
 	Payment getPaymentById(int paymentId);
 	

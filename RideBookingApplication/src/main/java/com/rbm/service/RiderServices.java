@@ -15,6 +15,7 @@ import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Payment;
+import com.rbm.entity.Rating;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.enums.PaymentMethod;
@@ -125,7 +126,12 @@ public class RiderServices {
 						payment.setRide(last);
 						last.setPayment(payment);
 						
-						pd.makePayment(payment);
+						boolean payment2 = pd.makePayment(payment);
+						if(payment2) {
+							System.out.println("Payment Successful!");
+						}else {
+							System.err.println("Payment Failed!");
+						}
 						
 					}
 					
@@ -278,8 +284,42 @@ public class RiderServices {
 				int choice2 = sc.nextInt();
 				switch (choice2) {
 				case 1:
-					RatingDao rd = new RatingDaoImple();
-					rd.giveRating(rideId2);
+					Rating rating = new Rating();
+
+					System.out.print("Enter Rating (1-5): ");
+					int stars = sc.nextInt();
+
+					sc.nextLine();
+
+					System.out.print("Enter Review : ");
+					String review = sc.nextLine();
+
+					rating.setStars(stars);
+					rating.setReview(review);
+
+					rating.setRide(ride2);
+					rating.setDriver(ride2.getDriver());
+					rating.setRider(ride2.getRider());
+
+					Driver driver1 = ride2.getDriver();
+					Rider rider1 = ride2.getRider();
+
+					driver1.setTotalRatings(driver1.getTotalRatings() + 1);
+					driver1.getRatingReceived().add(rating);
+					rider1.getRatingsGiven().add(rating);
+					ride2.setRating(rating);
+
+					double newAverage = (driver1.getAverageRating() * (driver1.getTotalRatings() - 1) + stars) / driver1.getTotalRatings();
+
+					driver1.setAverageRating(newAverage);
+					
+					boolean giveRating = rad.giveRating(rating, ride2, driver1);
+					if(giveRating) {
+						System.out.println("Rating Added Successfully!");
+					}else {
+						System.err.println("Rating failed...!");
+					}
+
 					break;
 				case 2:
 
@@ -312,7 +352,41 @@ public class RiderServices {
 						System.out.println("----------------------------------------");
 						if(options.equalsIgnoreCase("y")) {
 							System.out.println("------------------- Give Rating ---------------");
-							rad.giveRating(r.getRideId());
+							Rating rating = new Rating();
+
+							System.out.print("Enter Rating (1-5): ");
+							int stars = sc.nextInt();
+
+							sc.nextLine();
+
+							System.out.print("Enter Review : ");
+							String review = sc.nextLine();
+
+							rating.setStars(stars);
+							rating.setReview(review);
+
+							rating.setRide(r);
+							rating.setDriver(r.getDriver());
+							rating.setRider(r.getRider());
+
+							Driver driver2 = r.getDriver();
+							Rider rider1 = r.getRider();
+
+							driver2.setTotalRatings(driver2.getTotalRatings() + 1);
+							driver2.getRatingReceived().add(rating);
+							rider1.getRatingsGiven().add(rating);
+							r.setRating(rating);
+
+							double newAverage = (driver2.getAverageRating() * (driver2.getTotalRatings() - 1) + stars) / driver2.getTotalRatings();
+
+							driver2.setAverageRating(newAverage);
+							
+							boolean giveRating = rad.giveRating(rating, r, driver2);
+							if(giveRating) {
+								System.out.println("Rating Added Successfully!");
+							}else {
+								System.err.println("Rating failed...!");
+							}
 							System.out.println("-----------------------------------------------");
 						}else {
 							break;

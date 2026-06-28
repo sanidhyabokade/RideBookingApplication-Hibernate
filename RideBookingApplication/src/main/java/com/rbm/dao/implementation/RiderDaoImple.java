@@ -1,13 +1,11 @@
 package com.rbm.dao.implementation;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.rbm.dao.RiderDao;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.service.RiderServices;
-import com.rbm.util.AppUtil;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -20,7 +18,6 @@ import jakarta.persistence.criteria.Root;
 public class RiderDaoImple implements RiderDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-	Scanner sc = AppUtil.getScanner();
 	
 	@Override
 	public void registerRider(Rider rider) {

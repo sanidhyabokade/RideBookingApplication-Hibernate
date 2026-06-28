@@ -10,7 +10,7 @@ public interface VehicleDao {
 	
 	Vehicle getVehicleById(int vehicleId);
 		
-	void updateVehicle(int vehicleId);
+	boolean updateVehicle(Vehicle vehicle);
 	
 	void deleteVehicle(int vehicleId);
 	
