@@ -23,7 +23,7 @@ public class RideDaoImple implements RideDao{
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
 	@Override
-	public void bookRide(Ride ride) {
+	public boolean bookRide(Ride ride) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
@@ -31,13 +31,12 @@ public class RideDaoImple implements RideDao{
 				et.begin();
 				em.persist(ride);
 				et.commit();
-				System.out.println("Ride Booked Successfully");
-				System.out.println("Ride Id : "+ ride.getRideId());
+				return true;
 			} catch (Exception e) {
 				if(et.isActive()) {
 					et.rollback();
 				}
-				System.err.println("Booking Ride Failed...!");
+				return false;
 			}
 			finally {
 				em.close();
@@ -114,7 +113,7 @@ public class RideDaoImple implements RideDao{
 	}
 
 	@Override
-	public void cancelRide(int rideId) {
+	public boolean cancelRide(int rideId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Ride ride = em.find(Ride.class, rideId);
@@ -123,12 +122,12 @@ public class RideDaoImple implements RideDao{
 			et.begin();
 			em.merge(ride);
 			et.commit();
-			System.out.println("Ride Cancelled Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Cancelling Ride Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -137,7 +136,7 @@ public class RideDaoImple implements RideDao{
 	}
 
 	@Override
-	public void completeRide(Ride ride, Driver driver) {
+	public boolean completeRide(Ride ride, Driver driver) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
@@ -146,14 +145,14 @@ public class RideDaoImple implements RideDao{
 			em.merge(driver);
 			em.merge(ride);
 			et.commit();
+			return true;
 		} catch (Exception e) {
 
 			if(et.isActive()) {
 				et.rollback();
 			}
-
-			System.err.println("Completing Ride Failed!");
 			e.printStackTrace();
+			return false;
 
 		} finally {
 			em.close();
@@ -171,32 +170,11 @@ public class RideDaoImple implements RideDao{
 	}
 
 	@Override
-	public void acceptRide(int driverId, int rideId) {
+	public boolean acceptRide(Driver driver, Ride ride) {
 		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
-		Driver driver = em.find(Driver.class, driverId);
-		Ride ride = em.find(Ride.class, rideId);
-
-		if(driver == null) {
-			System.err.println("Driver Not Found!");
-			return;
-		}
-
-		if(ride == null) {
-			System.err.println("Ride Not Found!");
-			return;
-		}
-
-		if(ride.getRideStatus() != RideStatus.REQUESTED) {
-			System.err.println("Ride Already Accepted/Completed!");
-			return;
-		}
-
-		if(ride.getDriver() != null) {
-			System.err.println("Ride Already Assigned!");
-			return;
-		}
+		
 
 		ride.setDriver(driver);
 		ride.setRideStatus(RideStatus.ACCEPTED);
@@ -207,12 +185,12 @@ public class RideDaoImple implements RideDao{
 			em.merge(ride);
 			em.merge(driver);
 			et.commit();
-			System.out.println("Ride Accepted Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Accepting Ride Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -247,42 +225,25 @@ public class RideDaoImple implements RideDao{
 	
 
 	@Override
-	public void startRide(int rideId) {
+	public boolean startRide(int rideId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
-
 			Ride ride = em.find(Ride.class, rideId);
-
-			if(ride == null) {
-				System.err.println("Ride Not Found!");
-				return;
-			}
-
-			if(ride.getRideStatus() != RideStatus.ACCEPTED) {
-				System.err.println("Only ACCEPTED rides can be started!");
-				return;
-			}
-
 			et.begin();
-
 			ride.setRideStatus(RideStatus.STARTED);
 			ride.setStartTime(LocalDateTime.now());
-
 			em.merge(ride);
-
 			et.commit();
-
-			System.out.println("Ride Started Successfully!");
+			return true;
 
 		} catch (Exception e) {
 
 			if(et.isActive()) {
 				et.rollback();
 			}
-
-			System.err.println("Starting Ride Failed!");
+			return false;
 
 		} finally {
 			em.close();

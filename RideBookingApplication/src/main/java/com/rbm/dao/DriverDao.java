@@ -10,7 +10,7 @@ public interface DriverDao {
 	
 	boolean registerDriver(Driver driver);
 	
-	void loginAsDriver(String email, String password);
+	List<Driver> loginAsDriver(String email, String password);
 	
 	Driver getDriverById(int driverId);
 	

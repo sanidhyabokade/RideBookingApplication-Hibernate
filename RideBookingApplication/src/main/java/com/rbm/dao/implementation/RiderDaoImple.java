@@ -20,22 +20,20 @@ public class RiderDaoImple implements RiderDao{
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	
 	@Override
-	public void registerRider(Rider rider) {
+	public boolean registerRider(Rider rider) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		
-		
-		
+
 		try {
 			et.begin();
 			em.persist(rider);
 			et.commit();
-			System.out.println("Rider Registered Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Registration Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -61,19 +59,19 @@ public class RiderDaoImple implements RiderDao{
 	}
 
 	@Override
-	public void updateRider(Rider rider) {
+	public boolean updateRider(Rider rider) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		try {
 			et.begin();
 			em.merge(rider);
 			et.commit();
-			System.out.println("Rider Updated Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Updating Rider Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -83,7 +81,7 @@ public class RiderDaoImple implements RiderDao{
 	}
 
 	@Override
-	public void deleteRider(int riderId) {
+	public boolean deleteRider(int riderId) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Rider rider = em.find(Rider.class, riderId);
@@ -91,12 +89,12 @@ public class RiderDaoImple implements RiderDao{
 			et.begin();
 			em.remove(rider);
 			et.commit();
-			System.out.println("Rider Removed Successfully!");
+			return true;
 		} catch (Exception e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			System.err.println("Removing Rider Failed...!");
+			return false;
 		}
 		finally {
 			em.close();
@@ -105,19 +103,14 @@ public class RiderDaoImple implements RiderDao{
 	}
 
 	@Override
-	public void viewProfile(int riderId) {
+	public Rider viewProfile(int riderId) {
 		Rider rider = getRiderById(riderId);
-		System.out.println("======== RIDER PROFILE ========");
-	    System.out.println("ID      : " + rider.getUserId());
-	    System.out.println("Name    : " + rider.getName());
-	    System.out.println("Email   : " + rider.getEmail());
-	    System.out.println("Phone   : " + rider.getPhoneNUmber());
-	    System.out.println();
+	    return rider;
 		
 	}
 
 	@Override
-	public void loginAsRider(String email, String password) {
+	public List<Rider> loginAsRider(String email, String password) {
 		EntityManager em = emf.createEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Rider> query = builder.createQuery(Rider.class);
@@ -129,18 +122,7 @@ public class RiderDaoImple implements RiderDao{
 						)
 				);
 		List<Rider> list = em.createQuery(query).getResultList();
-		
-		if(list.isEmpty()) {
-			System.err.println("Invalid Credentials...!");
-		}else {
-			System.out.println();
-			System.out.println("Login Successfull...!");
-			System.out.println();
-			Rider rider = list.get(0);
-			String greetings = "Hello "+rider.getName()+" 👋";
-			RiderServices rs = new RiderServices();
-			rs.riderDashBoard(rider.getUserId(),greetings);
-		}
+		return list;
 		
 	}
 

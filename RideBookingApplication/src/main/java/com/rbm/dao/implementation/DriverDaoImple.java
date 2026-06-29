@@ -6,7 +6,6 @@ import com.rbm.dao.DriverDao;
 import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
-import com.rbm.service.DriverServices;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -128,7 +127,7 @@ public class DriverDaoImple implements DriverDao{
 	}
 
 	@Override
-	public void loginAsDriver(String email, String password) {
+	public List<Driver> loginAsDriver(String email, String password) {
 		EntityManager em = emf.createEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Driver> query = builder.createQuery(Driver.class);
@@ -140,18 +139,7 @@ public class DriverDaoImple implements DriverDao{
 						)
 				);
 		List<Driver> list = em.createQuery(query).getResultList();
-		
-		if(list.isEmpty()) {
-			System.err.println("Invalid Credentials...!");
-		}else {
-			System.out.println();
-			System.out.println("Login Successfull...!");
-			System.out.println();
-			Driver driver = list.get(0);
-			String greetings = "Hello "+driver.getName()+" 👋";
-			DriverServices ds = new DriverServices();
-			ds.driverDashBoard(driver.getUserId(), greetings);
-		}
+		return list;
 		
 	}
 

@@ -1,6 +1,7 @@
 package com.rbm.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.DriverDao;
@@ -9,6 +10,7 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Vehicle;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.VehicleType;
+import com.rbm.service.DriverServices;
 import com.rbm.util.AppUtil;
 
 
@@ -105,6 +107,17 @@ public class DriverController {
 	}
 	
 	public void driverLogin(String email, String password) {
-		dao.loginAsDriver(email, password);
+		List<Driver> loginAsDriver = dao.loginAsDriver(email, password);
+		if(loginAsDriver.isEmpty()) {
+			System.err.println("Invalid Credentials...!");
+		}else {
+			System.out.println();
+			System.out.println("Login Successfull...!");
+			System.out.println();
+			Driver driver = loginAsDriver.get(0);
+			String greetings = "Hello "+driver.getName()+" 👋";
+			DriverServices ds = new DriverServices();
+			ds.driverDashBoard(driver.getUserId(), greetings);
+		}
 	}
 }

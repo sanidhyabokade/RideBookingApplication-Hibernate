@@ -14,27 +14,21 @@ import jakarta.persistence.TypedQuery;
 public class VehicleDaoImple implements VehicleDao{
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	@Override
-	public void addVehicle(Vehicle vehicle) {
+	public boolean addVehicle(Vehicle vehicle) {
 		EntityManager em = emf.createEntityManager();
 	    EntityTransaction et = em.getTransaction();
 
 	    try {
 	        et.begin();
-
 	        em.persist(vehicle);
-
 	        et.commit();
-
-	        System.out.println("Vehicle Added Successfully!");
-
+	        return true;
 	    } catch (Exception e) {
 
 	        if(et.isActive()) {
 	            et.rollback();
 	        }
-
-	        System.err.println("Adding Vehicle Failed...!");
-
+	        return false;
 	    } finally {
 	        em.close();
 	    }
@@ -84,36 +78,28 @@ public class VehicleDaoImple implements VehicleDao{
 	}
 
 	@Override
-	public void deleteVehicle(int vehicleId) {
+	public boolean deleteVehicle(int vehicleId) {
 		EntityManager em = emf.createEntityManager();
 	    EntityTransaction et = em.getTransaction();
 
 	    Vehicle vehicle = em.find(Vehicle.class, vehicleId);
 
 	    if(vehicle == null) {
-	        System.err.println("Vehicle Not Found!");
 	        em.close();
-	        return;
+	        return false;
 	    }
 
 	    try {
-
 	        et.begin();
-
 	        em.remove(vehicle);
-
 	        et.commit();
-
-	        System.out.println("Vehicle Deleted Successfully!");
-
+	        return true;
 	    } catch (Exception e) {
 
 	        if(et.isActive()) {
 	            et.rollback();
 	        }
-
-	        System.err.println("Deleting Vehicle Failed...!");
-
+	        return false;
 	    } finally {
 	        em.close();
 	    }

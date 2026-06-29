@@ -7,19 +7,19 @@ import com.rbm.entity.Rider;
 
 public interface RiderDao {
 	
-	void registerRider(Rider rider);
+	boolean registerRider(Rider rider);
 	
 	Rider getRiderById(int riderId);
 	
 	List<Ride> getRideHistory(int riderId);
 	
-	void loginAsRider(String email, String password);
+	List<Rider> loginAsRider(String email, String password);
 	
-	void updateRider(Rider rider);
+	boolean updateRider(Rider rider);
 	
-	void deleteRider(int riderId);
+	boolean deleteRider(int riderId);
 	
-	void viewProfile(int riderId);
+	Rider viewProfile(int riderId);
 	
 	int getTotalRides(int riderId);
 }

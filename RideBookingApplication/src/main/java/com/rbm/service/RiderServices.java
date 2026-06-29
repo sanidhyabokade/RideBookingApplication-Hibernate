@@ -63,134 +63,144 @@ public class RiderServices {
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
-				
-					Rider rider = rid.getRiderById(riderId);
-					
-					if(rider == null) {
 
-						System.err.println("Rider Not Found!");
+				Rider rider = rid.getRiderById(riderId);
+
+				if(rider == null) {
+
+					System.err.println("Rider Not Found!");
+					return;
+				}
+
+				PaymentStatus paymentStatus = rider.getRides().getLast().getPayment().getPaymentStatus();
+
+				while(paymentStatus.equals(PaymentStatus.PENDING)) {
+
+					Ride last = rider.getRides().getLast();
+
+					Payment payment = last.getPayment();
+
+					payment.setRide(last);
+					payment.setAmount(last.getFare());
+
+					PaymentMethod method = null;
+
+					System.out.println();
+					System.out.println("Your Fare is: "+last.getFare());
+					System.out.println();
+					System.out.println("*CHOOSE PAYMENT MODE*");
+					System.out.println("1.UPI");
+					System.out.println("2.CARD");
+					System.out.println("3.CASH");
+
+					int choice1 = sc.nextInt();
+
+					switch(choice1) {
+
+					case 1:
+						method = PaymentMethod.UPI;
+						payment.setPaymentMethod(method);
+						payment.setPaymentStatus(PaymentStatus.SUCCESS);
+						payment.setPaymentTime(LocalDateTime.now());
+						break;
+
+					case 2:
+						method = PaymentMethod.CARD;
+						payment.setPaymentMethod(method);
+						payment.setPaymentStatus(PaymentStatus.SUCCESS);
+						payment.setPaymentTime(LocalDateTime.now());
+						break;
+
+					case 3:
+						method = PaymentMethod.CASH;
+						payment.setPaymentMethod(method);
+						payment.setPaymentStatus(PaymentStatus.SUCCESS);
+						payment.setPaymentTime(LocalDateTime.now());
+						break;
+
+					default:
+						System.out.println("Invalid Choice!");
 						return;
 					}
-					
-					PaymentStatus paymentStatus = rider.getRides().getLast().getPayment().getPaymentStatus();
-					
-					while(paymentStatus.equals(PaymentStatus.PENDING)) {
-						
-						Ride last = rider.getRides().getLast();
 
-						Payment payment = last.getPayment();
-						
-						payment.setRide(last);
-						payment.setAmount(last.getFare());
+					payment.setRide(last);
+					last.setPayment(payment);
 
-						PaymentMethod method = null;
-						
-						System.out.println();
-						System.out.println("Your Fare is: "+last.getFare());
-						System.out.println();
-						System.out.println("*CHOOSE PAYMENT MODE*");
-						System.out.println("1.UPI");
-						System.out.println("2.CARD");
-						System.out.println("3.CASH");
-
-						int choice1 = sc.nextInt();
-
-						switch(choice1) {
-
-						case 1:
-							method = PaymentMethod.UPI;
-							payment.setPaymentMethod(method);
-							payment.setPaymentStatus(PaymentStatus.SUCCESS);
-							payment.setPaymentTime(LocalDateTime.now());
-							break;
-
-						case 2:
-							method = PaymentMethod.CARD;
-							payment.setPaymentMethod(method);
-							payment.setPaymentStatus(PaymentStatus.SUCCESS);
-							payment.setPaymentTime(LocalDateTime.now());
-							break;
-
-						case 3:
-							method = PaymentMethod.CASH;
-							payment.setPaymentMethod(method);
-							payment.setPaymentStatus(PaymentStatus.SUCCESS);
-							payment.setPaymentTime(LocalDateTime.now());
-							break;
-
-						default:
-							System.out.println("Invalid Choice!");
-							return;
-						}
-						
-						payment.setRide(last);
-						last.setPayment(payment);
-						
-						boolean payment2 = pd.makePayment(payment);
-						if(payment2) {
-							System.out.println("Payment Successful!");
-						}else {
-							System.err.println("Payment Failed!");
-						}
-						
+					boolean payment2 = pd.makePayment(payment);
+					if(payment2) {
+						System.out.println("Payment Successful!");
+					}else {
+						System.err.println("Payment Failed!");
 					}
-					
-					System.out.println("===============================");
-					System.out.println("==                           ==");
-					System.out.println("==        BOOK A RIDE        ==");
-					System.out.println("==                           ==");
-					System.out.println("===============================");
+
+				}
+
+				System.out.println("===============================");
+				System.out.println("==                           ==");
+				System.out.println("==        BOOK A RIDE        ==");
+				System.out.println("==                           ==");
+				System.out.println("===============================");
+				System.out.println();
+
+				System.out.print("Enter Pickup Location: ");
+				String pickUpLoc = sc.next();
+
+				System.out.print("Enter Destination: ");
+				String destination = sc.next();
+
+				System.out.print("Enter Distance(km): ");
+				double distance = sc.nextDouble();
+
+				VehicleType vehicleType = chooseVehicleType();
+
+				double fare = AppUtil.calculateFare(distance, vehicleType);
+
+				Ride ride = new Ride();
+				Payment payment = new Payment();
+				ride.setPickUpLoc(pickUpLoc);
+				ride.setDestination(destination);
+				ride.setDistance(distance);
+				ride.setFare(fare);
+				ride.setBookingTime(LocalDateTime.now());
+				ride.setRideStatus(RideStatus.REQUESTED);
+				ride.setRider(rider);
+				ride.setVehicleType(vehicleType);
+				ride.setPayment(payment);
+				boolean bookRide = rd.bookRide(ride);
+				if(bookRide) {
 					System.out.println();
+					System.out.println("Ride Booked Successfully");
+					System.out.println("Ride Id : "+ ride.getRideId());
+					System.out.println();
+				}else {
+					System.out.println();
+					System.err.println("Booking Ride Failed...!");
+					System.out.println();
+				}
+				System.out.println("Estimated Fare : ₹"+ fare);
 
-					System.out.print("Enter Pickup Location: ");
-					String pickUpLoc = sc.next();
-
-					System.out.print("Enter Destination: ");
-					String destination = sc.next();
-
-					System.out.print("Enter Distance(km): ");
-					double distance = sc.nextDouble();
-
-					VehicleType vehicleType = chooseVehicleType();
-
-					double fare = AppUtil.calculateFare(distance, vehicleType);
-
-					Ride ride = new Ride();
-					Payment payment = new Payment();
-					ride.setPickUpLoc(pickUpLoc);
-					ride.setDestination(destination);
-					ride.setDistance(distance);
-					ride.setFare(fare);
-					ride.setBookingTime(LocalDateTime.now());
-					ride.setRideStatus(RideStatus.REQUESTED);
-					ride.setRider(rider);
-					ride.setVehicleType(vehicleType);
-					ride.setPayment(payment);
-					rd.bookRide(ride);
-					System.out.println("Estimated Fare : ₹"+ fare);
-				
 				break;
 			case 2:
 				Ride ride1 = rd.viewCurrentRide(riderId);
 				if(ride1 == null) {
-			        System.out.println("No Current Ride Found!");
-			    } else {
+					System.out.println("No Current Ride Found!");
+				} else {
 					System.out.println("------------ Current Ride  -------------");
-			    	System.out.println("Ride ID: "+ride1.getRideId());
+					System.out.println("Ride ID: "+ride1.getRideId());
 					System.out.println("Pickup Location: "+ride1.getPickUpLoc());
 					System.out.println("Drop Location: "+ride1.getDestination());
 					System.out.println("Fare: "+ride1.getFare());
 					System.out.println();
 					System.out.println("----------------------------------------");
-			    }
+				}
 				break;
 			case 3:
 				Rider rider2 = rid.getRiderById(riderId);
-				
+
 				Ride last = rider2.getRides().getLast();
-				
+
 				int rideId2 = last.getRideId();
-				
+
 				Ride ride2 = rd.getRideById(rideId2);
 
 				if(ride2 == null) {
@@ -255,10 +265,10 @@ public class RiderServices {
 					System.out.println("Invalid Choice!");
 					return;
 				}
-				
+
 				payment3.setRide(ride2);
 				ride2.setPayment(payment3);
-				
+
 				if(payment3.getPaymentStatus().equals(PaymentStatus.SUCCESS)) {
 					driver.setTotalEarnings(
 							driver.getTotalEarnings()
@@ -270,12 +280,18 @@ public class RiderServices {
 				}else {
 					System.out.println("Payment Failed...!");
 				}
-				
-				rd.completeRide(ride2, driver);
-				
-				System.out.println("Ride Completed Successfully!");
-				System.out.println("Ride Duration : "
-						+ duration + " Minutes");
+
+				boolean completeRide = rd.completeRide(ride2, driver);
+
+				if(completeRide) {
+					System.out.println("Ride Completed Successfully!");
+					System.out.println("Ride Duration : " + duration + " Minutes");
+
+				}else {
+					System.err.println("Completing Ride Failed!");
+				}
+
+
 
 				System.out.println();
 				System.out.println("Would you like to rate your driver?");
@@ -312,7 +328,7 @@ public class RiderServices {
 					double newAverage = (driver1.getAverageRating() * (driver1.getTotalRatings() - 1) + stars) / driver1.getTotalRatings();
 
 					driver1.setAverageRating(newAverage);
-					
+
 					boolean giveRating = rad.giveRating(rating, ride2, driver1);
 					if(giveRating) {
 						System.out.println("Rating Added Successfully!");
@@ -333,16 +349,21 @@ public class RiderServices {
 				System.out.println();
 				System.out.print("Enter your ride ID: ");
 				int rideId = sc.nextInt();
-				rd.cancelRide(rideId);
+				boolean cancelRide = rd.cancelRide(rideId);
+				if(cancelRide) {
+					System.out.println("Ride Cancelled Successfully!");
+				}else {
+					System.err.println("Cancelling Ride Failed...!");
+				}
 				break;
 			case 5:
 				List<Ride> rideHistory = rid.getRideHistory(riderId);
 				for(Ride r:rideHistory) {
 					if(r == null) {
-				        System.out.println("No Current Ride Found!");
-				    } else {
+						System.out.println("No Current Ride Found!");
+					} else {
 						System.out.println("------------ Ride History -------------");
-				    	System.out.println("Ride ID: "+r.getRideId());
+						System.out.println("Ride ID: "+r.getRideId());
 						System.out.println("Pickup Location: "+r.getPickUpLoc());
 						System.out.println("Drop Location: "+r.getDestination());
 						System.out.println("Fare: "+r.getFare());
@@ -380,7 +401,7 @@ public class RiderServices {
 							double newAverage = (driver2.getAverageRating() * (driver2.getTotalRatings() - 1) + stars) / driver2.getTotalRatings();
 
 							driver2.setAverageRating(newAverage);
-							
+
 							boolean giveRating = rad.giveRating(rating, r, driver2);
 							if(giveRating) {
 								System.out.println("Rating Added Successfully!");
@@ -391,15 +412,21 @@ public class RiderServices {
 						}else {
 							break;
 						}
-				    }
+					}
 				}
 				break;
 			case 6:
-				rid.viewProfile(riderId);
+				Rider profile = rid.viewProfile(riderId);
+				System.out.println("======== RIDER PROFILE ========");
+			    System.out.println("ID      : " + profile.getUserId());
+			    System.out.println("Name    : " + profile.getName());
+			    System.out.println("Email   : " + profile.getEmail());
+			    System.out.println("Phone   : " + profile.getPhoneNUmber());
+			    System.out.println();
 				break;
 			case 7:
 				Rider rider1 = rid.getRiderById(riderId);
-				
+
 				while(true) {
 					System.out.println("Press 1 to Update Email");
 					System.out.println("Press 2 to Update Password");
@@ -411,19 +438,34 @@ public class RiderServices {
 						System.out.print("Enter New Email: ");
 						String email = sc.next();
 						rider1.setEmail(email);
-						rid.updateRider(rider1);
+						boolean updateRider1 = rid.updateRider(rider1);
+						if(updateRider1) {
+							System.out.println("Rider Updated Successfully!");
+						}else {
+							System.err.println("Updating Rider Failed...!");
+						}
 						break;
 					case 2:
 						System.out.print("Enter New Password: ");
 						String password = sc.next();
 						rider1.setPassword(password);
-						rid.updateRider(rider1);
+						boolean updateRider2 = rid.updateRider(rider1);
+						if(updateRider2) {
+							System.out.println("Rider Updated Successfully!");
+						}else {
+							System.err.println("Updating Rider Failed...!");
+						}
 						break;
 					case 3:
 						System.out.print("Enter New Contact Number: ");
 						long phoneNum = sc.nextLong();
 						rider1.setPhoneNUmber(phoneNum);
-						rid.updateRider(rider1);
+						boolean updateRider3 = rid.updateRider(rider1);
+						if(updateRider3) {
+							System.out.println("Rider Updated Successfully!");
+						}else {
+							System.err.println("Updating Rider Failed...!");
+						}
 						break;
 					case 4:
 						return;
@@ -436,45 +478,45 @@ public class RiderServices {
 			case 8:
 				System.out.println("Exiting...!");
 				return;
-				
+
 			default:
 				System.err.println("Invlid Input...!");
 				break;
 			}
 		}
 	}
-		private VehicleType chooseVehicleType() {
+	private VehicleType chooseVehicleType() {
 
-			while(true) {
+		while(true) {
 
-				System.out.println("1.BIKE");
-				System.out.println("2.AUTO");
-				System.out.println("3.MINI");
-				System.out.println("4.SEDAN");
-				System.out.println("5.SUV");
+			System.out.println("1.BIKE");
+			System.out.println("2.AUTO");
+			System.out.println("3.MINI");
+			System.out.println("4.SEDAN");
+			System.out.println("5.SUV");
 
-				int choice = sc.nextInt();
+			int choice = sc.nextInt();
 
-				switch(choice) {
+			switch(choice) {
 
-				case 1:
-					return VehicleType.BIKE;
+			case 1:
+				return VehicleType.BIKE;
 
-				case 2:
-					return VehicleType.AUTO;
+			case 2:
+				return VehicleType.AUTO;
 
-				case 3:
-					return VehicleType.MINI;
+			case 3:
+				return VehicleType.MINI;
 
-				case 4:
-					return VehicleType.SEDAN;
+			case 4:
+				return VehicleType.SEDAN;
 
-				case 5:
-					return VehicleType.SUV;
+			case 5:
+				return VehicleType.SUV;
 
-				default:
-					System.out.println("Invalid Choice!");
-				}
+			default:
+				System.out.println("Invalid Choice!");
 			}
 		}
+	}
 }

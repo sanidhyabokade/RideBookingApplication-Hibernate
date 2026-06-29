@@ -1,10 +1,12 @@
 package com.rbm.controller;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.rbm.dao.RiderDao;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Rider;
+import com.rbm.service.RiderServices;
 import com.rbm.util.AppUtil;
 
 public class RiderController {
@@ -12,7 +14,18 @@ public class RiderController {
 	RiderDao dao = new RiderDaoImple();
 	
 	public void riderLogin(String email, String password) {
-		dao.loginAsRider(email, password);
+		List<Rider> loginAsRider = dao.loginAsRider(email, password);
+		if(loginAsRider.isEmpty()) {
+			System.err.println("Invalid Credentials...!");
+		}else {
+			System.out.println();
+			System.out.println("Login Successfull...!");
+			System.out.println();
+			Rider rider = loginAsRider.get(0);
+			String greetings = "Hello "+rider.getName()+" 👋";
+			RiderServices rs = new RiderServices();
+			rs.riderDashBoard(rider.getUserId(),greetings);
+		}
 	}
 	
 	public void registerRider() {
@@ -41,6 +54,11 @@ public class RiderController {
 		rider.setPassword(password);
 		rider.setPhoneNUmber(contactNumber);
 		
-		dao.registerRider(rider);
+		boolean registerRider = dao.registerRider(rider);
+		if(registerRider) {
+			System.out.println("Rider Registered Successfully!");
+		}else {
+			System.err.println("Registration Failed...!");
+		}
 	}
 }

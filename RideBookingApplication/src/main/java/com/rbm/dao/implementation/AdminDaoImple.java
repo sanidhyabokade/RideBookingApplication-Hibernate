@@ -9,7 +9,6 @@ import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.enums.RideStatus;
-import com.rbm.service.AdminServices;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
@@ -190,7 +189,7 @@ public class AdminDaoImple implements AdminDao {
 		return null;
 	}
 	
-	public void loginAsAdmin(String email, String password) {
+	public List<Admin> loginAsAdmin(String email, String password) {
 		EntityManager em = emf.createEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Admin> query = builder.createQuery(Admin.class);
@@ -202,18 +201,7 @@ public class AdminDaoImple implements AdminDao {
 						)
 				);
 		List<Admin> list = em.createQuery(query).getResultList();
-		
-		if(list.isEmpty()) {
-			System.err.println("Invalid Credentials...!");
-		}else {
-			System.out.println();
-			System.out.println("Login Successfull...!");
-			System.out.println();
-			Admin admin = list.get(0);
-			String greetings = "Hello "+admin.getName()+" 👋";
-			AdminServices as = new AdminServices();
-			as.adminDashboard(admin.getUserId(), greetings);
-		}
+		return list;
 		
 	}
 

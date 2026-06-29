@@ -7,29 +7,29 @@ import com.rbm.entity.Ride;
 
 public interface RideDao {
 
-	void bookRide(Ride ride);
-	
+	boolean bookRide(Ride ride);
+
 	Ride getRideById(int rideId);
-	
+
 	List<Ride> getAllRides();
-	
+
 	List<Ride> getPendingRides();
-	
+
 	List<Ride> getAcceptedRides();
-	
+
 	List<Ride> getCompletedRides();
-	
+
 	List<Ride> getCancelledRides();
-	
-	void cancelRide(int rideId);
-	
-	void completeRide(Ride ride, Driver driver);
-	
+
+	boolean cancelRide(int rideId);
+
+	boolean completeRide(Ride ride, Driver driver);
+
 	List<Ride> viewAvailableRides();
-	
-	void acceptRide(int driverId, int rideId);
-	
+
+	boolean acceptRide(Driver driver, Ride ride);
+
 	Ride viewCurrentRide(int driverId);
-	
-	void startRide(int rideId);
+
+	boolean startRide(int rideId);
 }

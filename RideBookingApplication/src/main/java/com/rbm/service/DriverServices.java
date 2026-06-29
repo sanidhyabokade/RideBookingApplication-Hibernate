@@ -79,7 +79,26 @@ public class DriverServices {
 			case 2:
 				System.out.print("ENTER RIDE ID OF THE RIDE THAT YOU WANT TO ACCEPT: ");
 				int rideId = sc.nextInt();
-				rd.acceptRide(driverId, rideId);
+				Ride rideById = rd.getRideById(rideId);
+				if(rideById == null) {
+					System.err.println("Ride Not Found!");
+				}
+				Driver driverById2 = dd.getDriverById(driverId);
+				if(driverById2 == null) {
+					System.err.println("Driver Not Found!");
+				}
+				if(rideById.getRideStatus() != RideStatus.REQUESTED) {
+					System.err.println("Ride Already Accepted/Completed!");
+				}
+				if(rideById.getDriver() != null) {
+					System.err.println("Ride Already Assigned!");
+				}
+				boolean acceptRide = rd.acceptRide(driverById2,rideById);
+				if(acceptRide) {
+					System.out.println("Ride Accepted Successfully!");
+				}else {
+					System.err.println("Accepting Ride Failed...!");
+				}
 				break;
 			case 3:
 				Ride ride = rd.viewCurrentRide(driverId);
@@ -97,8 +116,16 @@ public class DriverServices {
 				break;
 			case 4:
 				Ride currentRide1 = rd.viewCurrentRide(driverId);
+				if(currentRide1 == null) {
+					System.err.println("You Haven't Accepted Any Ride!");
+				}
 				int rideId1 = currentRide1.getRideId();
-				rd.startRide(rideId1);
+				boolean startRide = rd.startRide(rideId1);
+				if(startRide) {
+					System.out.println("Ride Started Successfully!");
+				}else {
+					System.err.println("Starting Ride Failed!");
+				}
 				break;
 			case 5:
 				Ride currentRide2 = rd.viewCurrentRide(driverId);
