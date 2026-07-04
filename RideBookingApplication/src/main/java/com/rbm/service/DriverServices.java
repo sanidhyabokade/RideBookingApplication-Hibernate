@@ -18,6 +18,8 @@ import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
+import com.rbm.exception.DriverNotFoundException;
+import com.rbm.exception.RideNotFoundException;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
@@ -81,11 +83,11 @@ public class DriverServices {
 				int rideId = sc.nextInt();
 				Ride rideById = rd.getRideById(rideId);
 				if(rideById == null) {
-					System.err.println("Ride Not Found!");
+					throw new RideNotFoundException("Ride not found with ID: " + rideId);
 				}
 				Driver driverById2 = dd.getDriverById(driverId);
 				if(driverById2 == null) {
-					System.err.println("Driver Not Found!");
+					throw new DriverNotFoundException("Driver not found with ID: " + driverId);
 				}
 				if(rideById.getRideStatus() != RideStatus.REQUESTED) {
 					System.err.println("Ride Already Accepted/Completed!");
@@ -117,7 +119,9 @@ public class DriverServices {
 			case 4:
 				Ride currentRide1 = rd.viewCurrentRide(driverId);
 				if(currentRide1 == null) {
-					System.err.println("You Haven't Accepted Any Ride!");
+					throw new RideNotFoundException(
+					        "Ride not found with ID: " + driverId
+					    );
 				}
 				int rideId1 = currentRide1.getRideId();
 				boolean startRide = rd.startRide(rideId1);

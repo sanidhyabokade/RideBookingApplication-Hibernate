@@ -8,11 +8,13 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Ride;
 import com.rbm.enums.DriverAvailablity;
 import com.rbm.enums.RideStatus;
+import com.rbm.exception.RideNotFoundException;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -32,7 +34,7 @@ public class RideDaoImple implements RideDao{
 				em.persist(ride);
 				et.commit();
 				return true;
-			} catch (Exception e) {
+			} catch (PersistenceException e) {
 				if(et.isActive()) {
 					et.rollback();
 				}
@@ -117,13 +119,18 @@ public class RideDaoImple implements RideDao{
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Ride ride = em.find(Ride.class, rideId);
+		if (ride == null) {
+		    throw new RideNotFoundException(
+		        "Ride not found with ID: " + rideId
+		    );
+		}
 		ride.setRideStatus(RideStatus.CANCELLED);
 		try {
 			et.begin();
 			em.merge(ride);
 			et.commit();
 			return true;
-		} catch (Exception e) {
+		} catch (PersistenceException e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
@@ -146,7 +153,7 @@ public class RideDaoImple implements RideDao{
 			em.merge(ride);
 			et.commit();
 			return true;
-		} catch (Exception e) {
+		} catch (PersistenceException e) {
 
 			if(et.isActive()) {
 				et.rollback();
@@ -186,7 +193,7 @@ public class RideDaoImple implements RideDao{
 			em.merge(driver);
 			et.commit();
 			return true;
-		} catch (Exception e) {
+		} catch (PersistenceException e) {
 			if(et.isActive()) {
 				et.rollback();
 			}
@@ -238,7 +245,7 @@ public class RideDaoImple implements RideDao{
 			et.commit();
 			return true;
 
-		} catch (Exception e) {
+		} catch (PersistenceException e) {
 
 			if(et.isActive()) {
 				et.rollback();

@@ -22,6 +22,8 @@ import com.rbm.enums.PaymentMethod;
 import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.enums.VehicleType;
+import com.rbm.exception.RideNotFoundException;
+import com.rbm.exception.RiderNotFoundException;
 import com.rbm.util.AppUtil;
 import com.rbm.util.UiUtil;
 
@@ -67,9 +69,8 @@ public class RiderServices {
 				Rider rider = rid.getRiderById(riderId);
 
 				if(rider == null) {
-
-					System.err.println("Rider Not Found!");
-					return;
+					throw new RiderNotFoundException("Rider Not Found!");
+					
 				}
 
 				PaymentStatus paymentStatus = rider.getRides().getLast().getPayment().getPaymentStatus();
@@ -183,7 +184,7 @@ public class RiderServices {
 			case 2:
 				Ride ride1 = rd.viewCurrentRide(riderId);
 				if(ride1 == null) {
-					System.out.println("No Current Ride Found!");
+					throw new RideNotFoundException("Ride not found with ID: " + ride1);
 				} else {
 					System.out.println("------------ Current Ride  -------------");
 					System.out.println("Ride ID: "+ride1.getRideId());
@@ -204,8 +205,7 @@ public class RiderServices {
 				Ride ride2 = rd.getRideById(rideId2);
 
 				if(ride2 == null) {
-					System.err.println("Ride Not Found!");
-					return;
+					throw new RideNotFoundException("Ride not found with ID: " + ride2);
 				}
 
 				if(ride2.getRideStatus() != RideStatus.STARTED) {
