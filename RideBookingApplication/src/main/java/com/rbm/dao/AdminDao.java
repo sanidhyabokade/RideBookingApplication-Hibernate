@@ -24,6 +24,18 @@ public interface AdminDao {
 	
 	List<Ride> getCompletedRides();
 	
+	long getTotalDrivers();
+	
+	long getTotalRiders();
+	
+	long getCompletedRideCount();
+	
+	long getCancelledRideCount();
+	
+	double getRevenue();
+	
+	Driver getTopRatedDriver();
+	
 	List<Ride> getCancelledRides();
 	
 	List<Payment> getAllPayments();

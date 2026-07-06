@@ -53,7 +53,8 @@ public class AdminServices {
 			System.out.println("|    11. Remove Driver           |");
 			System.out.println("|    12. View Profile            |");
 			System.out.println("|    13. Update Profile          |");
-			System.out.println("|    14. Logout                  |");
+			System.out.println("|    14. View System Analytics   |");
+			System.out.println("|    15. Logout                  |");
 			System.out.println("|                                |");
 			System.out.println("==================================");
 			System.out.print("Enter Your Choice(1, 2, 3, ..., 14): ");
@@ -242,6 +243,29 @@ public class AdminServices {
 					}
 				}
 			case 14:
+				System.out.println("========== SYSTEM ANALYTICS ==========");
+
+				System.out.println("Total Drivers       : " + ad.getTotalDrivers());
+
+				System.out.println("Total Riders        : " + ad.getTotalRiders());
+
+				System.out.println("Completed Rides     : " + ad.getCompletedRideCount());
+
+				System.out.println("Cancelled Rides     : " + ad.getCancelledRideCount());
+
+				System.out.println("Total Revenue       : ₹" + ad.getRevenue());
+
+
+				Driver driver = ad.getTopRatedDriver();
+
+				if (driver != null) {
+				    System.out.println("Top Rated Driver    : "
+				            + driver.getName()
+				            + " (" + driver.getRatingReceived() + ")");
+				} else {
+				    System.out.println("Top Rated Driver    : N/A");
+				}
+			case 15:
 				System.out.println();
 				System.out.println("Exiting...!");
 				return;

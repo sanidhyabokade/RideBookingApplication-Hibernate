@@ -8,12 +8,14 @@ import com.rbm.entity.Driver;
 import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
+import com.rbm.enums.PaymentStatus;
 import com.rbm.enums.RideStatus;
 import com.rbm.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -164,7 +166,7 @@ public class AdminDaoImple implements AdminDao {
 	public boolean updateAdmin(Admin admin) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction et = em.getTransaction();
-		
+
 		try {
 			et.begin();
 			em.merge(admin);
@@ -179,7 +181,7 @@ public class AdminDaoImple implements AdminDao {
 		finally {
 			em.close();
 		}
-		
+
 
 	}
 
@@ -188,7 +190,7 @@ public class AdminDaoImple implements AdminDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public List<Admin> loginAsAdmin(String email, String password) {
 		EntityManager em = emf.createEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -202,7 +204,7 @@ public class AdminDaoImple implements AdminDao {
 				);
 		List<Admin> list = em.createQuery(query).getResultList();
 		return list;
-		
+
 	}
 
 	@Override
@@ -210,6 +212,115 @@ public class AdminDaoImple implements AdminDao {
 		EntityManager em = emf.createEntityManager();
 		Admin admin = em.find(Admin.class, adminId);
 		return admin;
+	}
+
+	@Override
+	public long getTotalDrivers() {
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			return em.createQuery(
+					"SELECT COUNT(d) FROM Driver d",
+					Long.class)
+					.getSingleResult();
+
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long getTotalRiders() {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			return em.createQuery(
+					"SELECT COUNT(r) FROM Rider r",
+					Long.class)
+					.getSingleResult();
+
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long getCompletedRideCount() {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			return em.createQuery(
+					"SELECT COUNT(r) FROM Ride r WHERE r.rideStatus = :status",
+					Long.class)
+					.setParameter("status", RideStatus.COMPLETED)
+					.getSingleResult();
+
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long getCancelledRideCount() {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			return em.createQuery(
+					"SELECT COUNT(r) FROM Ride r WHERE r.rideStatus = :status",
+					Long.class)
+					.setParameter("status", RideStatus.CANCELLED)
+					.getSingleResult();
+
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public double getRevenue() {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Double revenue = em.createQuery(
+					"SELECT SUM(p.amount) FROM Payment p WHERE p.paymentStatus = :status",
+					Double.class)
+					.setParameter("status", PaymentStatus.SUCCESS)
+					.getSingleResult();
+
+			return revenue == null ? 0.0 : revenue;
+
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public Driver getTopRatedDriver() {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			return em.createQuery(
+					"SELECT d FROM Driver d ORDER BY d.rating DESC",
+					Driver.class)
+					.setMaxResults(1)
+					.getSingleResult();
+
+		} catch (NoResultException e) {
+
+			return null;
+
+		} finally {
+
+			em.close();
+
+		}
 	}
 
 }
