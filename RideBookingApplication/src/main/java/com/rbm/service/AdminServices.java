@@ -13,6 +13,7 @@ import com.rbm.dao.implementation.RideDaoImple;
 import com.rbm.dao.implementation.RiderDaoImple;
 import com.rbm.entity.Admin;
 import com.rbm.entity.Driver;
+import com.rbm.entity.Payment;
 import com.rbm.entity.Ride;
 import com.rbm.entity.Rider;
 import com.rbm.util.AppUtil;
@@ -61,9 +62,22 @@ public class AdminServices {
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
+				Double revenue = ad.getTotalRevenue();
+
+				System.out.println("Total Revenue : ₹" + revenue);
 				
 				break;
 			case 2:
+				List<Payment> payments = ad.getAllPayments();
+
+				if (payments.isEmpty()) {
+				    System.out.println("No payments found.");
+				    return;
+				}
+
+				for (Payment payment : payments) {
+				    System.out.println(payment);
+				}
 				
 				break;
 			case 3:

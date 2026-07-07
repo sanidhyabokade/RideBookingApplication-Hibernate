@@ -73,12 +73,6 @@ public class Ride {
 		    fetch = FetchType.LAZY
 			)
 	private Rating rating;
-	
-	@ManyToOne(
-			fetch = FetchType.EAGER
-			)
-	@JoinColumn(name = "coupon_id")
-	private Coupon coupon;
 
 	public int getRideId() {
 		return rideId;
@@ -200,11 +194,5 @@ public class Ride {
 		this.rating = rating;
 	}
 
-	public Coupon getCoupon() {
-		return coupon;
-	}
 
-	public void setCoupon(Coupon coupon) {
-		this.coupon = coupon;
-	}
 }

@@ -110,8 +110,21 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Payment> getAllPayments() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = getEntityManager();
+
+	    try {
+
+	        TypedQuery<Payment> query = em.createQuery(
+	                "SELECT p FROM Payment p ORDER BY p.paymentTime DESC",
+	                Payment.class);
+
+	        return query.getResultList();
+
+	    } finally {
+
+	        em.close();
+
+	    }
 	}
 
 	@Override
@@ -191,8 +204,23 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public Double getTotalRevenue() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = getEntityManager();
+
+	    try {
+
+	        Double revenue = em.createQuery(
+	                "SELECT SUM(p.amount) FROM Payment p WHERE p.paymentStatus = :status",
+	                Double.class)
+	                .setParameter("status", PaymentStatus.SUCCESS)
+	                .getSingleResult();
+
+	        return revenue == null ? 0.0 : revenue;
+
+	    } finally {
+
+	        em.close();
+
+	    }
 	}
 
 	public List<Admin> loginAsAdmin(String email, String password) {

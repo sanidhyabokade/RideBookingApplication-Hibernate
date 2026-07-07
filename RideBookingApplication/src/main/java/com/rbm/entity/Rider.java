@@ -29,7 +29,6 @@ public class Rider extends User {
 			joinColumns = @JoinColumn(name = "rider_id"),
 			inverseJoinColumns = @JoinColumn(name = "coupon_id")
 			)
-	private List<Coupon> coupons;
 	
 	@OneToMany(
 			mappedBy = "rider",
@@ -50,10 +49,5 @@ public class Rider extends User {
 	public void setRides(List<Ride> rides) {
 		this.rides = rides;
 	}
-	public List<Coupon> getCoupons() {
-		return coupons;
-	}
-	public void setCoupons(List<Coupon> coupons) {
-		this.coupons = coupons;
-	}
+
 }
