@@ -360,7 +360,7 @@ public class RiderServices {
 				List<Ride> rideHistory = rid.getRideHistory(riderId);
 				for(Ride r:rideHistory) {
 					if(r == null) {
-						System.out.println("No Current Ride Found!");
+						throw new RideNotFoundException("Ride Not Found!!!");
 					} else {
 						System.out.println("------------ Ride History -------------");
 						System.out.println("Ride ID: "+r.getRideId());

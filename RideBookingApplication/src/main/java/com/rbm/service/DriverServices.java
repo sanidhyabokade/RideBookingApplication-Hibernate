@@ -105,7 +105,7 @@ public class DriverServices {
 			case 3:
 				Ride ride = rd.viewCurrentRide(driverId);
 				if(ride == null) {
-			        System.out.println("No Current Ride Found!");
+			        throw new RideNotFoundException("No Current Ride Found!");
 			    } else {
 					System.out.println("------------ Current Ride  -------------");
 			    	System.out.println("Ride ID: "+ride.getRideId());
