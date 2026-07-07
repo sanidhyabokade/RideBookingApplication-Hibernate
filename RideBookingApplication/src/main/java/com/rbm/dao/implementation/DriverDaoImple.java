@@ -21,10 +21,13 @@ public class DriverDaoImple implements DriverDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
 
 	@Override
 	public boolean registerDriver(Driver driver) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
@@ -45,7 +48,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public Driver getDriverById(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		em.close();
 		return driver;
@@ -53,7 +56,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public List<Ride> getDriverRideHistory(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		List<Ride> rides = driver.getRides();
 		em.close();
@@ -62,7 +65,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public boolean updateDriver(Driver driver) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		
 		try {
@@ -84,7 +87,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public boolean changeAvailability(int driverId, DriverAvailablity availablity) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
 		driver.setDriverAvailability(availablity);
@@ -106,7 +109,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public boolean deleteDriver(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Driver driver = em.find(Driver.class, driverId);
 		try {
@@ -128,7 +131,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public List<Driver> loginAsDriver(String email, String password) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Driver> query = builder.createQuery(Driver.class);
 		Root<Driver> root = query.from(Driver.class);
@@ -145,7 +148,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public int getTotalRides(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		int size = driver.getRides().size();
 		return size;
@@ -153,7 +156,7 @@ public class DriverDaoImple implements DriverDao{
 
 	@Override
 	public double getTotalRevenue(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Driver driver = em.find(Driver.class, driverId);
 		double earnings = driver.getTotalEarnings();
 		return earnings;

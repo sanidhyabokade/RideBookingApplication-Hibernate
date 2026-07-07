@@ -18,9 +18,13 @@ public class RiderDaoImple implements RiderDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public boolean registerRider(Rider rider) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
@@ -42,7 +46,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public Rider getRiderById(int riderId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Rider rider = em.find(Rider.class, riderId);
 		em.close();
 		return rider;
@@ -50,7 +54,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public List<Ride> getRideHistory(int riderId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Rider rider = em.find(Rider.class, riderId);
 		List<Ride> rides = rider.getRides();
 		em.close();
@@ -59,7 +63,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public boolean updateRider(Rider rider) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		try {
 			et.begin();
@@ -81,7 +85,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public boolean deleteRider(int riderId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Rider rider = em.find(Rider.class, riderId);
 		try {
@@ -110,7 +114,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public List<Rider> loginAsRider(String email, String password) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Rider> query = builder.createQuery(Rider.class);
 		Root<Rider> root = query.from(Rider.class);
@@ -127,7 +131,7 @@ public class RiderDaoImple implements RiderDao{
 
 	@Override
 	public int getTotalRides(int riderId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Rider rider = em.find(Rider.class, riderId);
 		int size = rider.getRides().size();
 		return size;

@@ -24,9 +24,13 @@ public class RideDaoImple implements RideDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public boolean bookRide(Ride ride) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 			try {
@@ -47,7 +51,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public Ride getRideById(int rideId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Ride ride = em.find(Ride.class, rideId);
 		em.close();
 		return ride;
@@ -55,7 +59,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getAllRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		TypedQuery<Ride> typedQuery = em.createQuery("SELECT r FROM Ride r",Ride.class);
 		List<Ride> list = typedQuery.getResultList();
 		em.close();
@@ -64,7 +68,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getPendingRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -77,7 +81,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getAcceptedRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -90,7 +94,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getCompletedRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -103,7 +107,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> getCancelledRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -116,7 +120,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public boolean cancelRide(int rideId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Ride ride = em.find(Ride.class, rideId);
 		if (ride == null) {
@@ -144,7 +148,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public boolean completeRide(Ride ride, Driver driver) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
@@ -168,7 +172,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public List<Ride> viewAvailableRides() {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = getEntityManager();
 		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r WHERE r.ridestatus = :status",Ride.class);
 		query.setParameter("status", RideStatus.REQUESTED);
 		List<Ride> list = query.getResultList();
@@ -178,7 +182,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public boolean acceptRide(Driver driver, Ride ride) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		
@@ -207,7 +211,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public Ride viewCurrentRide(int driverId) {
-		EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+		EntityManager em = getEntityManager();
 		try {
 
 			TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r WHERE r.driver.userId = :driverId AND (r.rideStatus = :accepted OR r.rideStatus = :started)", Ride.class);
@@ -233,7 +237,7 @@ public class RideDaoImple implements RideDao{
 
 	@Override
 	public boolean startRide(int rideId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {

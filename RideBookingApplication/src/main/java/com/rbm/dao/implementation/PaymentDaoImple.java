@@ -15,9 +15,13 @@ public class PaymentDaoImple implements PaymentDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public boolean makePayment(Payment payment) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
@@ -45,7 +49,7 @@ public class PaymentDaoImple implements PaymentDao{
 
 	@Override
 	public Payment getPaymentById(int paymentId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		Payment payment = em.find(Payment.class, paymentId);
 
@@ -56,7 +60,7 @@ public class PaymentDaoImple implements PaymentDao{
 
 	@Override
 	public List<Payment> getAllPayments() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		TypedQuery<Payment> query =
 				em.createQuery("SELECT p FROM Payment p", Payment.class);
@@ -71,7 +75,7 @@ public class PaymentDaoImple implements PaymentDao{
 
 	@Override
 	public Double getTotalRevenue() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		Double revenue =
 				em.createQuery("SELECT COALESCE(SUM(p.amount),0) FROM Payment p", Double.class)

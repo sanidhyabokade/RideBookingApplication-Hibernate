@@ -17,9 +17,13 @@ public class RatingDaoImple implements RatingDao{
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public boolean giveRating(Rating rating, Ride ride, Driver driver) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		
@@ -49,7 +53,7 @@ public class RatingDaoImple implements RatingDao{
 
 	@Override
 	public Rating getRatingById(int ratingId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		Rating rating = em.find(Rating.class, ratingId);
 
@@ -60,7 +64,7 @@ public class RatingDaoImple implements RatingDao{
 
 	@Override
 	public List<Rating> getDriverRatings(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.driver.userId = :driverId",Rating.class);
 
@@ -75,7 +79,7 @@ public class RatingDaoImple implements RatingDao{
 
 	@Override
 	public Double getAverageDriverRating(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		TypedQuery<Double> query = em.createQuery("SELECT AVG(r.stars) FROM Rating r WHERE r.driver.userId = :driverId", Double.class);
 

@@ -13,9 +13,14 @@ import jakarta.persistence.TypedQuery;
 
 public class VehicleDaoImple implements VehicleDao{
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
+	
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public boolean addVehicle(Vehicle vehicle) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 	    EntityTransaction et = em.getTransaction();
 
 	    try {
@@ -38,7 +43,7 @@ public class VehicleDaoImple implements VehicleDao{
 	@Override
 	public Vehicle getVehicleById(int vehicleId) {
 
-	    EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 	    Vehicle vehicle = em.find(Vehicle.class, vehicleId);
 
@@ -50,7 +55,7 @@ public class VehicleDaoImple implements VehicleDao{
 
 	@Override
 	public boolean updateVehicle(Vehicle vehicle) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 	    EntityTransaction et = em.getTransaction();
 	    
 	    try {
@@ -79,7 +84,7 @@ public class VehicleDaoImple implements VehicleDao{
 
 	@Override
 	public boolean deleteVehicle(int vehicleId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 	    EntityTransaction et = em.getTransaction();
 
 	    Vehicle vehicle = em.find(Vehicle.class, vehicleId);
@@ -108,7 +113,7 @@ public class VehicleDaoImple implements VehicleDao{
 
 	@Override
 	public List<Vehicle> getAllVehicles() {
-		 EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		    String jpql = "SELECT v FROM Vehicle v";
 

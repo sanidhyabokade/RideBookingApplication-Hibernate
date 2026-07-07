@@ -25,9 +25,13 @@ public class AdminDaoImple implements AdminDao {
 
 	EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 
+	private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+	
 	@Override
 	public List<Rider> getAllRiders() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		TypedQuery<Rider> query = em.createQuery("SELECT r FROM Rider r", Rider.class);
 		List<Rider> list = query.getResultList();
 		em.close();
@@ -36,7 +40,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Driver> getAllDrivers() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		TypedQuery<Driver> query = em.createQuery("SELECT d FROM Driver d", Driver.class);
 		List<Driver> list = query.getResultList();
 		em.close();
@@ -45,7 +49,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getAllRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r", Ride.class);
 		List<Ride> list = query.getResultList();
 		em.close();
@@ -54,7 +58,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getPendingRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -67,7 +71,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getAcceptedRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -80,7 +84,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getCompletedRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -93,7 +97,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public List<Ride> getCancelledRides() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Ride> query = builder.createQuery(Ride.class);
 		Root<Ride> root = query.from(Ride.class);
@@ -112,7 +116,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public boolean deleteRider(int riderId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Rider rider = em.find(Rider.class, riderId);
 		try {
@@ -134,7 +138,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public boolean deleteDriver(int driverId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 		Admin driver = em.find(Admin.class, driverId);
 		try {
@@ -156,7 +160,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public Admin viewAdminProfile() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Admin admin = em.find(Admin.class, 2);
 		return admin;
 
@@ -164,7 +168,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public boolean updateAdmin(Admin admin) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		EntityTransaction et = em.getTransaction();
 
 		try {
@@ -192,7 +196,7 @@ public class AdminDaoImple implements AdminDao {
 	}
 
 	public List<Admin> loginAsAdmin(String email, String password) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Admin> query = builder.createQuery(Admin.class);
 		Root<Admin> root = query.from(Admin.class);
@@ -209,7 +213,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public Admin getAdminById(int adminId) {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 		Admin admin = em.find(Admin.class, adminId);
 		return admin;
 	}
@@ -217,7 +221,7 @@ public class AdminDaoImple implements AdminDao {
 	@Override
 	public long getTotalDrivers() {
 
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
@@ -233,7 +237,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public long getTotalRiders() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
@@ -249,7 +253,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public long getCompletedRideCount() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
@@ -266,7 +270,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public long getCancelledRideCount() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
@@ -283,7 +287,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public double getRevenue() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
@@ -302,7 +306,7 @@ public class AdminDaoImple implements AdminDao {
 
 	@Override
 	public Driver getTopRatedDriver() {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManager();
 
 		try {
 
